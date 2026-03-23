@@ -1,39 +1,50 @@
 # FILE: ration-saathi/backend/app/services/analytics.py
-import duckbox
+import logging
 from typing import Dict, Any, Optional
 from datetime import date, timedelta
-import logging
-from app.core.config import settings
-from app.db.models import FPSRiskScore
-from sqlalchemy.orm import Session
-from app.db.session import get_db
+
+try:
+    import duckdb
+except ImportError:
+    duckdb = None
 
 logger = logging.getLogger(__name__)
+
+# Default return value in case of error or missing duckdb
+default_return = {
+    "fps_code": None,
+    "district_code": None,
+    "block_code": None,
+    "fps_name": None,
+    "complaints_30d": 0,
+    "complaints_90d": 0,
+    "resolution_rate": 100.0,  # Default to 100% (no risk)
+    "pos_anomaly_score": 0.0,
+    "repeat_complaint_rate": 0.0,
+    "composite_risk_score": 0.0,
+    "risk_tier": "low",
+    "last_calculated_at": date.today()
+}
 
 def calculate_fps_risk_score(fps_code: str) -> Dict[str, Any]:
     """
     Calculate the FPS risk score based on the five components.
     Returns a dictionary with the score components and the overall score.
+    If duckdb is not available, returns a default score.
     """
+    if duckdb is None:
+        logger.error("DuckDB is not installed. Returning default risk score for FPS: %s", fps_code)
+        return default_return
+
     # Default return value in case of error
-    default_return = {
-        "fps_code": fps_code,
-        "district_code": None,
-        "block_code": None,
-        "fps_name": None,
-        "complaints_30d": 0,
-        "complaints_90d": 0,
-        "resolution_rate": 100.0,  # Default to 100% (no risk)
-        "pos_anomaly_score": 0.0,
-        "repeat_complaint_rate": 0.0,
-        "composite_risk_score": 0.0,
-        "risk_tier": "low",
-        "last_calculated_at": date.today()
-    }
+    # (We keep the same structure as default_return but we'll overwrite with actual values if possible)
+    result = default_return.copy()
+    result["fps_code"] = fps_code
 
     try:
         # Parse the DATABASE_URL to get connection parameters
         from urllib.parse import urlparse
+        from app.core.config import settings
         url = urlparse(settings.DATABASE_URL)
         dbname = url.path[1:]  # remove the leading '/'
         user = url.username
@@ -65,11 +76,13 @@ def calculate_fps_risk_score(fps_code: str) -> Dict[str, Any]:
         result1 = con.execute(query1, [fps_code]).fetchone()
         if result1:
             district_code, block_code, fps_name = result1
+            result["district_code"] = district_code
+            result["block_code"] = block_code
+            result["fps_name"] = fps_name
         else:
             # If no active ration cards, we still want to calculate the score based on other data
-            district_code = None
-            block_code = None
-            fps_name = None
+            # Leave as None (already set in default_return)
+            pass
 
         # Query 2: Get total_ration_cards (active) for the fps_code
         query2 = """
@@ -92,6 +105,8 @@ def calculate_fps_risk_score(fps_code: str) -> Dict[str, Any]:
         result3 = con.execute(query3, [thirty_days_ago, ninety_days_ago, fps_code]).fetchone()
         complaints_30d = result3[0] if result3 else 0
         complaints_90d = result3[1] if result3 else 0
+        result["complaints_30d"] = int(complaints_30d)
+        result["complaints_90d"] = int(complaints_90d)
 
         # Query 4: Get total_cases and resolved_cases for the fps_code
         query4 = """
@@ -149,6 +164,7 @@ def calculate_fps_risk_score(fps_code: str) -> Dict[str, Any]:
             complaints_30d_rate = (complaints_30d / total_ration_cards) * 100
         else:
             complaints_30d_rate = 0.0
+        result["complaints_30d_rate"] = complaints_30d_rate  # Not in final return, but we can keep for debugging if needed
 
         # Component 2: complaints_90d_rate (percentage)
         if total_ration_cards > 0:
@@ -173,20 +189,4 @@ def calculate_fps_risk_score(fps_code: str) -> Dict[str, Any]:
             else:
                 pos_anomaly = 1 - actual_allocated_ratio  # fraction of shortfall
             # Only consider it an anomaly if actual_allocated_ratio < 0.85 (i.e., pos_anomaly > 0.15)
-            # But we'll use the pos_anomaly as is (0 to 1) and then multiply by 100 to get a percentage for scoring
-            pos_anomaly_score = pos_anomaly * 100
-        else:
-            pos_anomaly_score = 0.0
-
-        # Component 5: repeat_complaint_rate (percentage)
-        if total_complaints_30d > 0:
-            repeat_complaint_rate = (repeat_complaints / total_complaints_30d) * 100
-        else:
-            repeat_complaint_rate = 0.0
-
-        # Now calculate the composite score using the weights and the risk components
-        # Weights: complaints_30d: 0.30, complaints_90d: 0.15, resolution_risk: 0.20, pos_anomaly: 0.25, repeat_complaint: 0.10
-        composite_score = (
-            (complaints_30d_rate * 0.30) +
-            (complaints_90d_rate * 0.15) +
-            (resolution
+            # But we'll use the pos_anomaly as is (0 to 1) and then multiply by 100 to get a percentage for

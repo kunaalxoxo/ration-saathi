@@ -63,7 +63,7 @@ class GrievanceCase(Base):
     received_rice_kg = Column(Numeric(6, 2))
     voice_testimony_r2_key = Column(String)  # Cloudflare R2 object key
     transcript = Column(String)  # Bhashini STT output
-    status = Column(String(25), default='open', CheckConstraint("status IN ('open','acknowledged','under_investigation','resolved','closed')"))
+    status = Column(String(25), CheckConstraint("status IN ('open','acknowledged','under_investigation','resolved','closed')"), default='open')
     resolution_notes = Column(String)
     government_ref_number = Column(String(50))
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -97,7 +97,7 @@ class FPSRiskScore(Base):
     resolution_rate = Column(Numeric(5, 2), default=100)
     pos_anomaly_score = Column(Numeric(5, 2), default=0)
     composite_risk_score = Column(Numeric(5, 2), default=0)
-    risk_tier = Column(String(10), default='low', CheckConstraint("risk_tier IN ('low','medium','high','critical')"))
+    risk_tier = Column(String(10), CheckConstraint("risk_tier IN ('low','medium','high','critical')"), default='low')
     last_calculated_at = Column(DateTime, default=datetime.utcnow)
 
 class User(Base):

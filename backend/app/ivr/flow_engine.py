@@ -190,3 +190,70 @@ class IVRStateMachine:
         
         if not state_config:
             logger.error(f"Unknown state: {current_state}")
+
+    async def _handle_special_state_logic(self, call_sid: str, session: Dict[str, Any], 
+                                        digit: Optional[str], next_state: str):
+        """Handle special logic for certain states"""
+        # Handle RATION_CARD_INPUT - collect digits until *
+        if next_state == "RATION_CARD_INPUT" and digit and digit.isdigit():
+            collected = session.get("collected_data", {}).get("card_number", "")
+            session.setdefault("collected_data", {})["card_number"] = collected + digit
+        
+        # Handle CARD_LOOKUP transition - when user presses *
+        elif next_state == "CARD_LOOKUP" and digit == "*":
+            card_number = session.get("collected_data", {}).get("card_number", "")
+            session.setdefault("collected_data", {})["card_number"] = card_number
+            # In a real implementation, we would look up the card here
+            # For now, we'll simulate the lookup result
+            # This would normally call a service to check if card exists
+            # For this example, we'll assume it's found if it's not empty
+            lookup_result = "found" if card_number and len(card_number) >= 10 else "not_found"
+            session["current_state"] = lookup_result  # This will be processed in next iteration
+        
+        # Handle ENTITLEMENT_READ - we need to generate the prompt with data
+        elif next_state == "ENTITLEMENT_READ":
+            # In a real implementation, we would fetch entitlement data here
+            # For now, we'll just note that the prompt needs data
+            pass
+        
+        # Handle COMPLAINT_TYPE - store the selected issue type
+        elif next_state == "QUANTITY_INPUT" and digit in ["1", "2", "3"]:
+            issue_type_map = {"1": "wheat", "2": "rice", "3": "both"}
+            session.setdefault("collected_data", {})["issue_type"] = issue_type_map[digit]
+        
+        # Handle QUANTITY_INPUT - collect digits until *
+        elif next_state == "QUANTITY_INPUT" and digit and digit.isdigit():
+            collected = session.get("collected_data", {}).get("quantity", "")
+            session.setdefault("collected_data", {})["quantity"] = collected + digit
+        
+        # Handle CASE_CREATED - when we press * to submit quantity
+        elif next_state == "CASE_CREATED" and digit == "*":
+            # In a real implementation, we would create the case here
+            # For now, we'll just note that we need to generate a case number
+            pass
+        
+        # Handle CALLBACK_OFFER
+        elif next_state == "CALL_COMPLETED" and digit in ["1", "2"]:
+            callback_choice = "yes" if digit == "1" else "no"
+            session.setdefault("collected_data", {})["callback_requested"] = callback_choice
+    
+    def _get_current_timestamp(self) -> str:
+        """Get current timestamp in ISO format"""
+        from datetime import datetime
+        return datetime.utcnow().isoformat() + "Z"
+
+# Global instance
+ivr_flow_engine = IVRStateMachine()
+
+# Convenience functions
+async def get_session(call_sid: str) -> Optional[Dict[str, Any]]:
+    return await ivr_flow_engine.get_session(call_sid)
+
+async def save_session(call_sid: str, session: Dict[str, Any]) -> bool:
+    return await ivr_flow_engine.save_session(call_sid, session)
+
+async def create_session(call_sid: str, caller_phone_hash: str, channel: str) -> Dict[str, Any]:
+    return await ivr_flow_engine.create_session(call_sid, caller_phone_hash, channel)
+
+async def process_input(call_sid: str, digit: Optional[str]) -> Tuple[str, str, Dict[str, Any]]:
+    return await ivr_flow_engine.process_input(call_sid, digit)

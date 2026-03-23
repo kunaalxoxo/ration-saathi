@@ -217,4 +217,33 @@ async def get_overview(
             LIMIT 5
         """
         
-        top_risky_re
+        top_risky_results = db.execute(text(top_risky_query)).fetchall()
+
+        # Format the results
+        overview = {
+            "total_cases": case_results[0] if case_results else 0,
+            "open_cases": case_results[1] if case_results else 0,
+            "resolved_cases": case_results[2] if case_results else 0,
+            "avg_resolution_days": round(float(case_results[3]), 2) if case_results and case_results[3] is not None else 0.0,
+            "top_risky_fps": []
+        }
+        
+        for row in top_risky_results:
+            overview["top_risky_fps"].append({
+                "fps_code": row[0],
+                "fps_name": row[1],
+                "district_code": row[2],
+                "block_code": row[3],
+                "composite_risk_score": float(row[4]),
+                "risk_tier": row[5]
+            })
+        
+        return {
+            "success": True,
+            "data": overview,
+            "error": None
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching overview: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")

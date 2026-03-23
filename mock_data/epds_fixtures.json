@@ -1,0 +1,111 @@
+{
+  "ration_cards": [
+    {
+      "card_number": "RJ-BA-2025-00001",
+      "state_code": "RJ",
+      "district_code": "RJ-BA",
+      "block_code": "RJ-BA-001",
+      "fps_code": "RJ-BA-001",
+      "category": "PHH",
+      "household_head_name": "EncryptedName1",
+      "total_members": 5,
+      "phone_hash": "hash1",
+      "is_active": true,
+      "aadhaar_seeded": true
+    },
+    {
+      "card_number": "RJ-BA-2025-00002",
+      "state_code": "RJ",
+      "district_code": "RJ-BA",
+      "block_code": "RJ-BA-001",
+      "fps_code": "RJ-BA-001",
+      "category": "AAY",
+      "household_head_name": "EncryptedName2",
+      "total_members": 3,
+      "phone_hash": "hash2",
+      "is_active": true,
+      "aadhaar_seeded": true
+    },
+    {
+      "card_number": "RJ-BA-2025-00003",
+      "state_code": "RJ",
+      "district_code": "RJ-BA",
+      "block_code": "RJ-BA-002",
+      "fps_code": "RJ-BA-003",
+      "category": "PHH",
+      "household_head_name": "EncryptedName3",
+      "total_members": 6,
+      "phone_hash": "hash3",
+      "is_active": true,
+      "aadhaar_seeded": false
+    },
+    {
+      "card_number": "RJ-BA-2025-00004",
+      "state_code": "RJ",
+      "district_code": "RJ-BA",
+      "block_code": "RJ-BA-002",
+      "fps_code": "RJ-BA-004",
+      "category": "PHH",
+      "household_head_name": "EncryptedName4",
+      "total_members": 4,
+      "phone_hash": "hash4",
+      "is_active": true,
+      "aadhaar_seeded": true
+    },
+    {
+      "card_number": "RJ-BA-2025-00005",
+      "state_code": "RJ",
+      "district_code": "RJ-BA",
+      "block_code": "RJ-BA-003",
+      "fps_code": "RJ-BA-005",
+      "category": "AAY",
+      "household_head_name": "EncryptedName5",
+      "total_members": 2,
+      "phone_hash": "hash5",
+      "is_active": true,
+      "aadhaar_seeded": true
+    }
+  ],
+  "monthly_allocations": [
+    {
+      "ration_card_number": "RJ-BA-2025-00001",
+      "month_year": "2025-10-01",
+      "rice_kg": 5.0,
+      "wheat_kg": 5.0,
+      "sugar_kg": 0.5,
+      "fps_code": "RJ-BA-001"
+    },
+    {
+      "ration_card_number": "RJ-BA-2025-00002",
+      "month_year": "2025-10-01",
+      "rice_kg": 3.5,
+      "wheat_kg": 2.5,
+      "sugar_kg": 0.0,
+      "fps_code": "RJ-BA-001"
+    },
+    {
+      "ration_card_number": "RJ-BA-2025-00003",
+      "month_year": "2025-10-01",
+      "rice_kg": 6.0,
+      "wheat_kg": 6.0,
+      "sugar_kg": 0.5,
+      "fps_code": "RJ-BA-003"
+    },
+    {
+      "ration_card_number": "RJ-BA-2025-00004",
+      "month_year": "2025-10-01",
+      "rice_kg": 4.0,
+      "wheat_kg": 4.0,
+      "sugar_kg": 0.5,
+      "fps_code": "RJ-BA-004"
+    },
+    {
+      "ration_card_number": "RJ-BA-2025-00005",
+      "month_year": "2025-10-01",
+      "rice_kg": 2.0,
+      "wheat_kg": 1.5,
+      "sugar_kg": 0.0,
+      "fps_code": "RJ-BA-005"
+    }
+  ]
+}

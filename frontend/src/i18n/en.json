@@ -1,0 +1,176 @@
+{
+  "appName": "Ration Saathi",
+  "tagline": "Your Voice for Ration Entitlements",
+  "login": {
+    "title": "Log In",
+    "phoneNumber": "Phone Number",
+    "getOtp": "Get OTP",
+    "otp": "OTP",
+    "verify": "Verify",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?",
+    "dontHaveAccount": "Don't have an account?",
+    "signUp": "Sign Up"
+  },
+  "home": {
+    "welcome": "Welcome, {name}!",
+    "role": "Your role: {role}",
+    "actions": "Actions",
+    "checkEntitlement": "Check Entitlement",
+    "lodgeComplaint": "Lodge Complaint",
+    "trackCase": "Track Case",
+    "myVillageReport": "My Village Report",
+    "stats": {
+      "title": "Statistics",
+      "casesToday": "Cases Today",
+      "pendingCases": "Pending Cases",
+      "resolvedCases": "Resolved Cases",
+      "avgResolutionTime": "Avg Resolution Time"
+    }
+  },
+  "entitlementCheck": {
+    "title": "Check Entitlement",
+    "cardNumberLabel": "Ration Card Number",
+    "cardNumberPlaceholder": "Enter your ration card number",
+    "checkButton": "Check Entitlement",
+    "result": {
+      "title": "Entitlement Details",
+      "cardNumber": "Ration Card Number: {cardNumber}",
+      "headName": "Head of Household: {headName}",
+      "members": "Family Members: {members}",
+      "allocation": "This Month's Allocation",
+      "wheat": "Wheat: {wheat} kg",
+      "rice": "Rice: {rice} kg",
+      "sugar": "Sugar: {sugar} kg",
+      "action": "Action",
+      "lessReceived": "Less received? Lodge Complaint",
+      "printSlip": "Print Slip"
+    },
+    "error": {
+      "cardNotFound": "Ration card not found. Please enter a valid number.",
+      "invalidInput": "Please enter only numbers.",
+      "apiError": "Error fetching data. Please try again later."
+    }
+  },
+  "lodgeComplaint": {
+    "title": "Lodge Complaint",
+    "step1": "Step 1: Confirm Ration Card",
+    "step2": "Step 2: Select Issue Type",
+    "step3": "Step 3: Enter Quantities",
+    "step4": "Step 4: Select FPS",
+    "confirmCard": "Confirm Ration Card",
+    "cardNumber": "Ration Card Number: {cardNumber}",
+    "headName": "Head of Household: {headName}",
+    "correct": "This is correct",
+    "incorrect": "This is incorrect",
+    "issueType": "Issue Type",
+    "shortSupply": "Short Supply",
+    "denial": "Denial",
+    "quality": "Quality",
+    "weighing": "Weighing",
+    "other": "Other",
+    "expectedQuantity": "Expected Quantity",
+    "receivedQuantity": "Received Quantity",
+    "unit": "kg",
+    "fpsLabel": "Select FPS",
+    "fpsPlaceholder": "Search FPS...",
+    "photoOptional": "Optional: Take photo of weighing slip",
+    "takePhoto": "Take Photo",
+    "orUpload": "or Upload",
+    "submit": "Lodge Complaint",
+    "success": {
+      "title": "Complaint Successfully Lodged!",
+      "caseNumber": "Case Number: {caseNumber}",
+      "message": "Your complaint has been registered. Please keep the case number safe. You will also receive an SMS.",
+      "copy": "Copy",
+      "done": "Done"
+    },
+    "error": {
+      "submitFailed": "Failed to lodge complaint. Please try again.",
+      "invalidInput": "Please enter a valid number."
+    }
+  },
+  "caseTracker": {
+    "title": "Track Case",
+    "caseNumberLabel": "Case Number",
+    "caseNumberPlaceholder": "Enter case number",
+    "trackButton": "Track Case",
+    "result": {
+      "title": "Case Status",
+      "caseNumber": "Case Number: {caseNumber}",
+      "status": "Status: {status}",
+      "filedOn": "Filed On: {date}",
+      "timeline": "Timeline",
+      "stage": "Stage",
+      "date": "Date",
+      "notes": "Notes",
+      "resolution": "Resolution: {resolution}",
+      "notResolved": "Not yet resolved",
+      "contactInfo": "For more information, please contact our CSC assistant."
+    },
+    "error": {
+      "caseNotFound": "Case not found. Please enter a valid case number.",
+      "invalidInput": "Please enter only numbers and hyphens.",
+      "apiError": "Error fetching case. Please try again later."
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "overview": "Overview",
+    "fpsRisk": "FPS Risk",
+    "districtHeatmap": "District Heatmap",
+    "complaintTrends": "Complaint Trends",
+    "overviewCards": {
+      "totalCases": "Total Cases",
+      "openCases": "Open Cases",
+      "resolvedCases": "Resolved Cases",
+      "avgResolutionTime": "Avg Resolution Time"
+    },
+    "fpsRiskTable": {
+      "fpsCode": "FPS Code",
+      "fpsName": "FPS Name",
+      "district": "District",
+      "block": "Block",
+      "complaints30d": "30d Complaints",
+      "complaints90d": "90d Complaints",
+      "resolutionRate": "Resolution Rate",
+      "riskScore": "Risk Score",
+      "riskTier": "Risk Tier",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "heatmap": {
+      "legend": "Legend",
+      "low": "Low Complaints",
+      "medium": "Medium Complaints",
+      "high": "High Complaints",
+      "critical": "Critical Complaints"
+    },
+    "trends": {
+      "title": "Monthly Complaint Trends",
+      "xAxis": "Month",
+      "yAxis": "Number of Complaints"
+    },
+    "actions": {
+      "exportCsv": "Export to CSV",
+      "refresh": "Refresh"
+    }
+  },
+  "languageToggle": "Language",
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "success": "Success",
+    "failure": "Failure",
+    "warning": "Warning",
+    "info": "Info"
+  }
+}

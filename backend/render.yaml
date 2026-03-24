@@ -2,6 +2,7 @@ services:
   - type: web
     name: ration-saathi-api
     env: python
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -55,6 +56,7 @@ services:
   - type: worker
     name: ration-saathi-celery
     env: python
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: celery -A app.worker worker --loglevel=info
     envVars:

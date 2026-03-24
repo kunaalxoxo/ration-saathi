@@ -22,6 +22,5 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 cryptography==43.0.1
 boto3==1.35.23
-duckdb==1.1.0
 python-json-logger==2.0.7
 sentry-sdk[fastapi]==2.14.0

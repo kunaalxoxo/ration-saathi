@@ -1,47 +1,49 @@
-from fastapi import APIRouter, HTTPException, Depends
-from app.core.auth import require_role
-from app.db.models import GrievanceCase
-from app.db.session import get_db
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import logging
+from app.db.session import get_db
+from app.db.models import GrievanceCase
+from app.core.auth import require_role
+from pydantic import BaseModel
+from typing import Optional
 
-logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(prefix="/admin", tags=["admin"])
 
-@router.get("/cases")
+
+class GrievanceUpdate(BaseModel):
+    status: str
+    resolution_notes: Optional[str] = None
+
+
+@router.get("/cases", dependencies=[Depends(require_role("block_official"))])
 async def list_cases(
-    status: str = None,
-    fps_code: str = None,
-    db: Session = Depends(get_db),
-    token: dict = Depends(require_role("block_official"))
+    status: Optional[str] = None,
+    fps_code: Optional[str] = None,
+    db: Session = Depends(get_db)
 ):
+    """Admin endpoint to list and filter all grievance cases."""
     query = db.query(GrievanceCase)
     if status:
         query = query.filter(GrievanceCase.status == status)
     if fps_code:
         query = query.filter(GrievanceCase.fps_code == fps_code)
-    cases = query.order_by(GrievanceCase.created_at.desc()).limit(100).all()
-    return {"success": True, "data": [
-        {"id": str(c.id), "case_number": c.case_number, "status": c.status,
-         "fps_code": c.fps_code, "issue_type": c.issue_type,
-         "created_at": c.created_at.isoformat() if c.created_at else None}
-        for c in cases
-    ], "error": None}
 
-@router.patch("/cases/{case_number}/status")
+    return {"success": True, "data": query.order_by(GrievanceCase.created_at.desc()).all()}
+
+
+@router.patch("/cases/{case_id}", dependencies=[Depends(require_role("block_official"))])
 async def update_case_status(
-    case_number: str, body: dict,
-    db: Session = Depends(get_db),
-    token: dict = Depends(require_role("block_official"))
+    case_id: str,
+    data: GrievanceUpdate,
+    db: Session = Depends(get_db)
 ):
-    case = db.query(GrievanceCase).filter(GrievanceCase.case_number == case_number).first()
+    """Updates status and notes for a grievance."""
+    case = db.query(GrievanceCase).filter(GrievanceCase.id == case_id).first()
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    valid = ['open','acknowledged','under_investigation','resolved','closed']
-    if body.get("status") not in valid:
-        raise HTTPException(status_code=400, detail=f"Status must be one of {valid}")
-    case.status = body["status"]
-    if body.get("resolution_notes"):
-        case.resolution_notes = body["resolution_notes"]
+
+    case.status = data.status # type: ignore
+    if data.resolution_notes:
+        case.resolution_notes = data.resolution_notes # type: ignore
+
     db.commit()
-    return {"success": True, "data": {"case_number": case_number, "status": body["status"]}, "error": None}
+    return {"success": True, "message": "Case updated"}

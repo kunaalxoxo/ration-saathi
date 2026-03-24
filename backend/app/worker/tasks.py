@@ -1,14 +1,9 @@
 # FILE: ration-saathi/backend/app/worker/tasks.py
 from celery import shared_task
-from typing import Optional
 import logging
 from app.core.redis_client import redis_client
-from app.services.grievance import create_grievance_case
-from app.services.analytics import update_fps_risk_score
 from app.db.models import GrievanceCase
-from sqlalchemy.orm import Session
 from app.db.session import get_db
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -70,8 +65,8 @@ def update_fps_risk_score(self, fps_code: str):
         # The actual implementation will be in Milestone 6
         
         # Placeholder implementation
-        from app.services.analytics import calculate_fps_risk_score
-        risk_score = calculate_fps_risk_score(fps_code)
+        from app.services.analytics import analytics_service
+        risk_score = analytics_service.calculate_fps_risk_score(fps_code)
         
         logger.info(f"Updated risk score for {fps_code}: {risk_score}")
         return {"status": "risk_score_updated", "fps_code": fps_code, "score": risk_score}

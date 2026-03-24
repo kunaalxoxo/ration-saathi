@@ -1,9 +1,11 @@
 import httpx
 from app.core.config import settings
 
+
 class GroqClient:
     def __init__(self):
-        self.api_key = settings.GROQ_API_KEY; self.url = "https://api.groq.com/openai/v1/chat/completions"
+        self.api_key = settings.GROQ_API_KEY
+        self.url = "https://api.groq.com/openai/v1/chat/completions"
         self.model = "llama-3.3-70b-versatile"
 
     async def generate_scheme_guidance(self, scheme: str, lang: str = 'hi') -> str:
@@ -17,8 +19,22 @@ class GroqClient:
     async def _call_groq(self, p: str) -> str:
         try:
             async with httpx.AsyncClient() as client:
-                resp = await client.post(self.url, headers={"Authorization": f"Bearer {self.api_key}"}, json={"model": self.model, "messages": [{"role": "user", "content": p}], "max_tokens": 200, "temperature": 0.5}, timeout=5.0)
-                return resp.json()['choices'][0]['message']['content'].strip() if resp.status_code == 200 else "Kripya intezar karein."
-        except: return "Kripya apne nazdiki CSC kendra se sampark karein."
+                resp = await client.post(
+                    self.url,
+                    headers={"Authorization": f"Bearer {self.api_key}"},
+                    json={
+                        "model": self.model,
+                        "messages": [{"role": "user", "content": p}],
+                        "max_tokens": 200,
+                        "temperature": 0.5
+                    },
+                    timeout=5.0
+                )
+                if resp.status_code == 200:
+                    return resp.json()['choices'][0]['message']['content'].strip()
+                return "Kripya intezar karein."
+        except Exception:
+            return "Kripya apne nazdiki CSC kendra se sampark karein."
+
 
 groq_client = GroqClient()

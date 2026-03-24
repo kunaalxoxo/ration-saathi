@@ -25,11 +25,11 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(ivr_webhook.router, prefix="/ivr", tags=["ivr"])
-app.include_router(cases.router, prefix="/cases", tags=["cases"])
-app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
-app.include_router(admin.router, prefix="/admin", tags=["admin"])
+app.include_router(auth.router)
+app.include_router(ivr_webhook.router)
+app.include_router(cases.router)
+app.include_router(analytics.router)
+app.include_router(admin.router)
 
 @app.get("/")
 async def root():

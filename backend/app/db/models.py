@@ -1,11 +1,9 @@
-from datetime import date, datetime
 from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
-
-Base = declarative_base()
+from app.db.session import Base
 
 class RationCard(Base):
     __tablename__ = "ration_cards"

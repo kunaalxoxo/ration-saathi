@@ -1,6 +1,5 @@
 # FILE: ration-saathi/backend/app/core/redis_client.py
-import json
-from typing import Optional, Any, Union
+from typing import Optional, Union
 import logging
 
 try:
@@ -36,7 +35,7 @@ class RedisClient:
             self.redis = None
             logger.error(f"Failed to initialize Upstash Redis client: {str(e)}")
 
-    async def get(self, key: str) -> Optional[str]:
+    def get(self, key: str) -> Optional[str]:
         """Get value by key"""
         if not self.redis:
             return None
@@ -46,7 +45,7 @@ class RedisClient:
             logger.error(f"Error getting key {key} from Redis: {str(e)}")
             return None
 
-    async def setex(self, key: str, time: int, value: Union[str, bytes]) -> bool:
+    def setex(self, key: str, time: int, value: Union[str, bytes]) -> bool:
         """Set key with expiration time in seconds"""
         if not self.redis:
             return False
@@ -57,7 +56,7 @@ class RedisClient:
             logger.error(f"Error setting key {key} in Redis: {str(e)}")
             return False
 
-    async def incr(self, key: str) -> Optional[int]:
+    def incr(self, key: str) -> Optional[int]:
         """Increment the integer value of a key by 1"""
         if not self.redis:
             return None
@@ -67,7 +66,7 @@ class RedisClient:
             logger.error(f"Error incrementing key {key} in Redis: {str(e)}")
             return None
 
-    async def delete(self, *keys: str) -> int:
+    def delete(self, *keys: str) -> int:
         """Delete one or more keys"""
         if not self.redis:
             return 0
@@ -77,7 +76,7 @@ class RedisClient:
             logger.error(f"Error deleting keys {keys} from Redis: {str(e)}")
             return 0
 
-    async def exists(self, key: str) -> bool:
+    def exists(self, key: str) -> bool:
         """Check if key exists"""
         if not self.redis:
             return False
@@ -91,17 +90,17 @@ class RedisClient:
 redis_client = RedisClient()
 
 # Convenience functions
-async def get_redis_value(key: str) -> Optional[str]:
-    return await redis_client.get(key)
+def get_redis_value(key: str) -> Optional[str]:
+    return redis_client.get(key)
 
-async def set_redis_value_ex(key: str, time: int, value: Union[str, bytes]) -> bool:
-    return await redis_client.setex(key, time, value)
+def set_redis_value_ex(key: str, time: int, value: Union[str, bytes]) -> bool:
+    return redis_client.setex(key, time, value)
 
-async def increment_redis_key(key: str) -> Optional[int]:
-    return await redis_client.incr(key)
+def increment_redis_key(key: str) -> Optional[int]:
+    return redis_client.incr(key)
 
-async def delete_redis_keys(*keys: str) -> int:
-    return await redis_client.delete(*keys)
+def delete_redis_keys(*keys: str) -> int:
+    return redis_client.delete(*keys)
 
-async def redis_key_exists(key: str) -> bool:
-    return await redis_client.exists(key)
+def redis_key_exists(key: str) -> bool:
+    return redis_client.exists(key)

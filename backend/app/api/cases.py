@@ -1,30 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends
-from app.db.models import GrievanceCase
-from app.db.session import get_db
-from sqlalchemy.orm import Session
-import logging
-
-logger = logging.getLogger(__name__)
-router = APIRouter()
-
-@router.get("/{case_number}/status")
-async def get_case_status(case_number: str, db: Session = Depends(get_db)):
-    case = db.query(GrievanceCase).filter(GrievanceCase.case_number == case_number).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
-    return {"success": True, "data": {
-        "case_number": case.case_number,
-        "status": case.status,
-        "issue_type": case.issue_type,
-        "fps_code": case.fps_code,
-        "resolution_notes": case.resolution_notes,
-        "created_at": case.created_at.isoformat() if case.created_at else None
-    }, "error": None}
-
-@router.post("/create")
-async def create_case_web(request_data: dict, db: Session = Depends(get_db)):
-    from app.services.grievance import create_grievance_case
-    result = await create_grievance_case(request_data)
-    if not result["success"]:
-        raise HTTPException(status_code=400, detail=result["error"])
-    return result
+from fastapi import APIRouter, Depends, HTTPException; from sqlalchemy.orm import Session; from app.db.session import get_db; from app.db.models import GrievanceCase; from app.core.auth import get_current_user; from pydantic import BaseModel; from typing import List
+router = APIRouter(prefix="/cases", tags=["cases"])
+class CaseStatusResponse(BaseModel): case_number: str; status: str; created_at: str; issue_type: str
+@router.get("/{cn}", response_model=CaseStatusResponse)
+async def get_status(cn: str, db: Session = Depends(get_db)):
+    case = db.query(GrievanceCase).filter(GrievanceCase.case_number == cn).first()
+    if not case: raise HTTPException(status_code=404, detail="Case not found")
+    return {"case_number": case.case_number, "status": case.status, "created_at": case.created_at.isoformat(), "issue_type": case.issue_type}
+@router.post("/ivr-status")
+async def ivr_status(digits: str, db: Session = Depends(get_db)):
+    cn = f"RS-RJ-2025-{int(digits):05d}"; case = db.query(GrievanceCase).filter(GrievanceCase.case_number == cn).first()
+    return {"success": True, "status": case.status, "prompt": f"Aapka case {case.status} hai."} if case else {"success": False, "prompt": "Case number nahi mila."}

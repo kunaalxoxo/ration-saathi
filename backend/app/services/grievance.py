@@ -1,73 +1,12 @@
-from typing import Dict, Any
-from datetime import date
-import logging
-from app.db.models import GrievanceCase, RationCard
-from app.db.session import get_db
-from app.core.redis_client import redis_client
-from app.services.sms import send_case_created_sms
-from app.services.analytics import update_fps_risk_score
-from app.core.encryption import decrypt
-
-logger = logging.getLogger(__name__)
-
-
-async def create_grievance_case(session_data: Dict[str, Any]) -> Dict[str, Any]:
-    db = next(get_db())
+from datetime import date; import uuid; from sqlalchemy.orm import Session; from upstash_redis import Redis; from app.db.session import SessionLocal; from app.db.models import GrievanceCase, RationCard; from app.core.config import settings; from app.services.sms import sms_service; from app.core.encryption import encryption_service; from pydantic import BaseModel; from typing import Optional
+class GrievanceCreate(BaseModel): ration_card_id: uuid.UUID; reporter_type: str; issue_type: str; reported_month_year: date; expected_wheat_kg: float; expected_rice_kg: float; received_wheat_kg: float; received_rice_kg: float; fps_code: str; district_code: str; block_code: str; reporter_phone: Optional[str] = None
+async def create_grievance_case(data: GrievanceCreate) -> GrievanceCase:
+    db = SessionLocal(); redis = Redis(url=settings.UPSTASH_REDIS_REST_URL, token=settings.UPSTASH_REDIS_REST_TOKEN)
     try:
-        ration_card_id = session_data.get("resolved_card_id")
-        if not ration_card_id:
-            return {"success": False, "data": None, "error": "No ration card resolved in session"}
-        card = db.query(RationCard).filter(RationCard.id == ration_card_id).first()
-        if not card:
-            return {"success": False, "data": None, "error": f"Ration card not found: {ration_card_id}"}
-
-        collected = session_data.get("collected_data", {})
-        grain = collected.get("issue_type", "wheat")
-        exp_wheat = float(collected.get("expected_wheat_kg", 5.0))
-        exp_rice = float(collected.get("expected_rice_kg", 5.0))
-        try: qty = float(collected.get("quantity", "0"))
-        except: qty = 0.0
-
-        if grain == "wheat": rec_wheat, rec_rice = qty, exp_rice
-        elif grain == "rice": rec_wheat, rec_rice = exp_wheat, qty
-        else: rec_wheat, rec_rice = max(0.0, exp_wheat - qty/2), max(0.0, exp_rice - qty/2)
-
-        try: seq = await redis_client.incr("grievance_case:counter") or 1
-        except: import time; seq = int(time.time()) % 999999
-
-        case_number = f"RS-{card.state_code}-{date.today().year}-{str(seq).zfill(6)}"
-        if db.query(GrievanceCase).filter(GrievanceCase.case_number == case_number).first():
-            case_number = f"RS-{card.state_code}-{date.today().year}-{str(seq+1).zfill(6)}"
-
-        new_case = GrievanceCase(
-            case_number=case_number, ration_card_id=ration_card_id,
-            reporter_type="self", reporter_phone_encrypted=card.phone_encrypted,
-            fps_code=card.fps_code, district_code=card.district_code, block_code=card.block_code,
-            issue_type="short_supply", reported_month_year=date.today().replace(day=1),
-            expected_wheat_kg=exp_wheat, expected_rice_kg=exp_rice,
-            received_wheat_kg=rec_wheat, received_rice_kg=rec_rice, status="open"
-        )
-        db.add(new_case); db.commit(); db.refresh(new_case)
-        logger.info("Created case %s", case_number)
-
-        if card.phone_encrypted:
-            try:
-                phone = decrypt(card.phone_encrypted)
-                await send_case_created_sms(phone, case_number, session_data.get("language_selected","hi"))
-            except Exception as e:
-                logger.error("SMS failed: %s", e)
-
-        try: await update_fps_risk_score(card.fps_code)
-        except Exception as e: logger.error("Risk score update failed: %s", e)
-
-        return {"success": True, "data": {
-            "id": str(new_case.id), "case_number": new_case.case_number,
-            "fps_code": new_case.fps_code, "status": new_case.status,
-            "reported_month_year": new_case.reported_month_year.isoformat(),
-            "created_at": new_case.created_at.isoformat() if new_case.created_at else None
-        }, "error": None}
-    except Exception as e:
-        logger.error("Error creating case: %s", e)
-        return {"success": False, "data": None, "error": str(e)}
-    finally:
-        db.close()
+        yr = date.today().year; st = "RJ"; key = f"seq:grievance:{st}:{yr}"; seq = redis.incr(key); cn = f"RS-{st}-{yr}-{seq:05d}"
+        e_p = encryption_service.encrypt(data.reporter_phone) if data.reporter_phone else None
+        nc = GrievanceCase(case_number=cn, ration_card_id=data.ration_card_id, reporter_type=data.reporter_type, reporter_phone_encrypted=e_p, fps_code=data.fps_code, district_code=data.district_code, block_code=data.block_code, issue_type=data.issue_type, reported_month_year=data.reported_month_year, expected_wheat_kg=data.expected_wheat_kg, expected_rice_kg=data.expected_rice_kg, received_wheat_kg=data.received_wheat_kg, received_rice_kg=data.received_rice_kg, status="open")
+        db.add(nc); db.commit(); db.refresh(nc)
+        if data.reporter_phone: from app.worker import send_sms_task; send_sms_task.delay(data.reporter_phone, cn, "hi")
+        from app.worker import update_fps_risk_score_task; update_fps_risk_score_task.delay(data.fps_code); return nc
+    finally: db.close()

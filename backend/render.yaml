@@ -7,58 +7,51 @@ services:
     envVars:
       - key: ENVIRONMENT
         value: production
-      - key: SUPABASE_URL
-        fromSecret: supabase-url
-      - key: SUPABASE_ANON_KEY
-        fromSecret: supabase-anon-key
-      - key: SUPABASE_SERVICE_KEY
-        fromSecret: supabase-service-key
-      - key: DATABASE_URL
-        fromSecret: database-url
-      - key: UPSTASH_REDIS_REST_URL
-        fromSecret: upstash-redis-rest-url
-      - key: UPSTASH_REDIS_REST_TOKEN
-        fromSecret: upstash-redis-rest-token
-      - key: TWILIO_ACCOUNT_SID
-        fromSecret: twilio-account-sid
-      - key: TWILIO_AUTH_TOKEN
-        fromSecret: twilio-auth-token
-      - key: TWILIO_PHONE_NUMBER
-        fromSecret: twilio-phone-number
-      - key: TWILIO_WEBHOOK_SECRET
-        fromSecret: twilio-webhook-secret
-      - key: BHASHINI_USER_ID
-        fromSecret: bhashini-user-id
-      - key: BHASHINI_API_KEY
-        fromSecret: bhashini-api-key
-      - key: BHASHINI_PIPELINE_ID
-        fromSecret: bhashini-pipeline-id
-      - key: FAST2SMS_API_KEY
-        fromSecret: fast2sms-api-key
-      - key: R2_ACCOUNT_ID
-        fromSecret: r2-account-id
-      - key: R2_ACCESS_KEY_ID
-        fromSecret: r2-access-key-id
-      - key: R2_SECRET_ACCESS_KEY
-        fromSecret: r2-secret-access-key
-      - key: R2_BUCKET_NAME
-        fromSecret: r2-bucket-name
-      - key: R2_PUBLIC_URL
-        fromSecret: r2-public-url
-      - key: GROQ_API_KEY
-        fromSecret: groq-api-key
-      - key: ENCRYPTION_KEY
-        fromSecret: encryption-key
-      - key: JWT_SECRET_KEY
-        fromSecret: jwt-secret-key
-      - key: ACCESS_TOKEN_EXPIRE_MINUTES
-        value: 480
       - key: LOG_LEVEL
         value: INFO
-      - key: SENTRY_DSN
-        fromSecret: sentry-dsn
-      - key: USE_MOCK_EPDS
-        value: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_PHONE_NUMBER
+        sync: false
+      - key: TWILIO_WEBHOOK_SECRET
+        sync: false
+      - key: BHASHINI_USER_ID
+        sync: false
+      - key: BHASHINI_API_KEY
+        sync: false
+      - key: BHASHINI_PIPELINE_ID
+        sync: false
+      - key: FAST2SMS_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+
   - type: worker
     name: ration-saathi-celery
     env: python
@@ -67,55 +60,11 @@ services:
     envVars:
       - key: ENVIRONMENT
         value: production
-      - key: SUPABASE_URL
-        fromSecret: supabase-url
-      - key: SUPABASE_ANON_KEY
-        fromSecret: supabase-anon-key
-      - key: SUPABASE_SERVICE_KEY
-        fromSecret: supabase-service-key
-      - key: DATABASE_URL
-        fromSecret: database-url
       - key: UPSTASH_REDIS_REST_URL
-        fromSecret: upstash-redis-rest-url
+        sync: false
       - key: UPSTASH_REDIS_REST_TOKEN
-        fromSecret: upstash-redis-rest-token
-      - key: TWILIO_ACCOUNT_SID
-        fromSecret: twilio-account-sid
-      - key: TWILIO_AUTH_TOKEN
-        fromSecret: twilio-auth-token
-      - key: TWILIO_PHONE_NUMBER
-        fromSecret: twilio-phone-number
-      - key: TWILIO_WEBHOOK_SECRET
-        fromSecret: twilio-webhook-secret
-      - key: BHASHINI_USER_ID
-        fromSecret: bhashini-user-id
-      - key: BHASHINI_API_KEY
-        fromSecret: bhashini-api-key
-      - key: BHASHINI_PIPELINE_ID
-        fromSecret: bhashini-pipeline-id
-      - key: FAST2SMS_API_KEY
-        fromSecret: fast2sms-api-key
-      - key: R2_ACCOUNT_ID
-        fromSecret: r2-account-id
-      - key: R2_ACCESS_KEY_ID
-        fromSecret: r2-access-key-id
-      - key: R2_SECRET_ACCESS_KEY
-        fromSecret: r2-secret-access-key
-      - key: R2_BUCKET_NAME
-        fromSecret: r2-bucket-name
-      - key: R2_PUBLIC_URL
-        fromSecret: r2-public-url
-      - key: GROQ_API_KEY
-        fromSecret: groq-api-key
-      - key: ENCRYPTION_KEY
-        fromSecret: encryption-key
-      - key: JWT_SECRET_KEY
-        fromSecret: jwt-secret-key
-      - key: ACCESS_TOKEN_EXPIRE_MINUTES
-        value: 480
-      - key: LOG_LEVEL
-        value: INFO
-      - key: SENTRY_DSN
-        fromSecret: sentry-dsn
-      - key: USE_MOCK_EPDS
-        value: true
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false

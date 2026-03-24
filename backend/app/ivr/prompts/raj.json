@@ -1,47 +1,11 @@
 {
-  "LANGUAGE_SELECT": {
-    "prompt": "Ration Saathi mein aapka swagat hai. Hindi ke liye 1 dabayein. Rajasthani ke liye 2 dabayein. CSC sahayak ke liye 0 dabayein.",
-    "timeout": "Koi jawab nahi mila. Kripya 1 ya 2 dabayein.",
-    "invalid": "Galat button. Kripya 1 ya 2 dabayein."
-  },
-  "RATION_CARD_INPUT": {
-    "prompt": "Apna ration card number dabayein, phir star (*) dabayein.",
-    "timeout": "Card number nahi mila. Dobara koshish karein.",
-    "invalid": "Galat number. Sirf angrezi ke numbers dabayein."
-  },
-  "ENTITLEMENT_READ": {
-    "prompt_template": "Nomaste {head_name} ji. Is mahine {month} mein, aapko {wheat_kg} kilo gehu aur {rice_kg} kilo chawal milna chahiye. Kya aapko poora anaaj mila? Haan ke liye 1, kam mila toh 2 dabayein.",
-    "timeout": "Kripya apna javab 1 ya 2 mein dijiye.",
-    "invalid": "Galat input. Kripya 1 ya 2 dabayein."
-  },
-  "COMPLAINT_TYPE": {
-    "prompt": "Kaunsi cheez kam mili? Gehu ke liye 1, chawal ke liye 2, dono ke liye 3 dabayein.",
-    "timeout": "Kripya 1, 2 ya 3 mein se ek dabayein.",
-    "invalid": "Galat chunav. Kripya 1, 2 ya 3 dabayein."
-  },
-  "QUANTITY_INPUT": {
-    "prompt_template": "Aapko {expected_kg} kilo milna chahiye tha. Kitna mila? Kilo mein number dabayein phir star (*).",
-    "timeout": "Kripya praman darj karein phir star (*) dabayein.",
-    "invalid": "Galat praman. Kripya sankhya mein darj karein."
-  },
-  "CASE_CREATED": {
-    "prompt_template": "Aapki fariyaad darj ho gayi. Case number hai {case_number}. Yeh number apne paas rakhein. SMS bhi aayega. Dhanyavaad.",
-    "timeout": "",
-    "invalid": ""
-  },
-  "CARD_NOT_FOUND": {
-    "prompt": "Yeh card number hamare system mein nahi mila. CSC kendra par jaayein ya 0 dabayein sahayak ke liye.",
-    "timeout": "Kripya 0 dabayein CSC sahayak se baat karne ke liye.",
-    "invalid": "Galat input. Kripya 0 dabayein."
-  },
-  "ASSISTED_REDIRECT": {
-    "prompt": "Aapko hamare CSC sahayak se milayenge. Kripya {csc_phone} par call karein ya nearest CSC kendra par jaayein.",
-    "timeout": "",
-    "invalid": ""
-  },
-  "CALL_COMPLETED": {
-    "prompt": "Ration Saathi mein call karne ke liye dhanyavaad. Jai Hind.",
-    "timeout": "",
-    "invalid": ""
-  }
+  "LANGUAGE_SELECT": { "prompt": "Ration Saathi mein tharo swagat hai. Hindi vaste 1 dabao. Rajasthani vaste 2 dabao. CSC sahayak vaste 0 dabao.", "timeout": "Koi jawab koni milyo. Kripya 1 ya 2 dabao.", "invalid": "Galat button. Kripya 1 ya 2 dabao." },
+  "RATION_CARD_INPUT": { "prompt": "Tharo ration card number dabao, pache star dabao.", "timeout": "Card number koni milyo. Pacho koshish karo.", "invalid": "Galat number. Khali angrezi ra number dabao." },
+  "ENTITLEMENT_READ": { "prompt_template": "Ram Ram {head_name} ji. Ee mahine {month} mein, thane {wheat_kg} kilo gehu aur {rice_kg} kilo chawal milno chaiye. Kai thane pooro anaaj milyo? Haan vaste 1, kam milyo toh 2 dabao." },
+  "COMPLAINT_TYPE": { "prompt": "Kaini cheez kam mili? Gehu vaste 1, chawal vaste 2, dono vaste 3 dabao." },
+  "QUANTITY_INPUT": { "prompt_template": "Thane {expected_kg} kilo milno chaiye ho. Kitto milyo? Kilo mein number dabao pache star." },
+  "CASE_CREATED": { "prompt_template": "Thari fariyaad darj ho gayi. Case number hai {case_number}. O number thare pas rakhjo. SMS bhi aasi. Dhanyavaad." },
+  "CARD_NOT_FOUND": { "prompt": "O card number mhare system mein koni milyo. CSC kendra par jao ya 0 dabao sahayak vaste." },
+  "ASSISTED_REDIRECT": { "prompt": "Thane mhare CSC sahayak su milawa la. Kripya {csc_phone} par call karo ya nearest CSC kendra par jao." },
+  "CALL_COMPLETED": { "prompt": "Ration Saathi mein call karan vaste dhanyavaad. Jai Hind." }
 }

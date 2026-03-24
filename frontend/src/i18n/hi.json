@@ -1,176 +1,42 @@
 {
-  "appName": "Ration Saathi",
-  "tagline": "आपकी राशन अधिकार की आवाज़",
-  "login": {
-    "title": "लॉगिन करें",
-    "phoneNumber": "फोन नंबर",
-    "getOtp": "ओटीपी प्राप्त करें",
-    "otp": "ओटीपी",
-    "verify": "सत्यापित करें",
-    "rememberMe": "मुझे याद रखें",
-    "forgotPassword": "पासवर्ड भूल गए?",
-    "dontHaveAccount": "खाता नहीं है?",
-    "signUp": "साइन अप करें"
-  },
-  "home": {
-    "welcome": "स्वागत है, {name}!",
-    "role": "आपकी भूमिका: {role}",
-    "actions": "कार्रवाई",
-    "checkEntitlement": "अधिकार जांचें",
-    "lodgeComplaint": "शिकायत दर्ज करें",
-    "trackCase": "केस ट्रैक करें",
-    "myVillageReport": "मेरे गांव की रिपोर्ट",
-    "stats": {
-      "title": "आंकड़े",
-      "casesToday": "आज के केस",
-      "pendingCases": "लंबित केस",
-      "resolvedCases": "हल किए गए केस",
-      "avgResolutionTime": "औसत समाधान समय"
-    }
-  },
-  "entitlementCheck": {
-    "title": "अधिकार जांचें",
-    "cardNumberLabel": "राशन कार्ड नंबर",
-    "cardNumberPlaceholder": "अपना राशन कार्ड नंबर दर्ज करें",
-    "checkButton": "अधिकार जांचें",
-    "result": {
-      "title": "अधिकार विवरण",
-      "cardNumber": "राशन कार्ड नंबर: {cardNumber}",
-      "headName": "मुख्य सदस्य: {headName}",
-      "members": "परिवार के सदस्य: {members}",
-      "allocation": "इस महीने का अधिकार",
-      "wheat": "गेहूं: {wheat} kg",
-      "rice": "चावल: {rice} kg",
-      "sugar": "चीनी: {sugar} kg",
-      "action": "कार्रवाई",
-      "lessReceived": "कम मिला? शिकायत दर्ज करें",
-      "printSlip": "स्लिप प्रिंट करें"
-    },
-    "error": {
-      "cardNotFound": "राशन कार्ड नहीं मिला। कृपया सही नंबर दर्ज करें।",
-      "invalidInput": "कृपया केवल संख्या दर्ज करें।",
-      "apiError": "डेटा लाने में त्रुटि हुई। कृपया बाद में प्रयास करें।"
-    }
-  },
-  "lodgeComplaint": {
-    "title": "शिकायत दर्ज करें",
-    "step1": "चरण 1: राशन कार्ड की पुष्टि करें",
-    "step2": "चरण 2: समस्या का प्रकार चुनें",
-    "step3": "चरण 3: मात्रा दर्ज करें",
-    "step4": "चरण 4: एफपीएस चुनें",
-    "confirmCard": "राशन कार्ड की पुष्टि करें",
-    "cardNumber": "राशन कार्ड नंबर: {cardNumber}",
-    "headName": "मुख्य सदस्य: {headName}",
-    "correct": "यह सही है",
-    "incorrect": "यह गलत है",
-    "issueType": "समस्या का प्रकार",
-    "shortSupply": "कम supply",
-    "denial": "इंकार",
-    "quality": "गुणवत्ता",
-    "weighing": "तोल-मोल",
-    "other": "अन्य",
-    "expectedQuantity": "अपेक्षित मात्रा",
-    "receivedQuantity": "प्राप्त मात्रा",
-    "unit": "किग्रा",
-    "fpsLabel": "एफपीएस चुनें",
-    "fpsPlaceholder": "एफपीएस खोजें...",
-    "photoOptional": "वैकल्पिक: तौल की स्लिप की फोटो लें",
-    "takePhoto": "फोटो लें",
-    "orUpload": "या अपलोड करें",
-    "submit": "शिकायत दर्ज करें",
-    "success": {
-      "title": "शिकायत सफलतापूर्वक दर्ज!",
-      "caseNumber": "केस नंबर: {caseNumber}",
-      "message": "आपकी शिकायत दर्ज कर ली गई है। केस नंबर को सुरक्षित रखें। आपको एसएमएस भी मिलेगा।",
-      "copy": "कॉपी करें",
-      "done": "समाप्त"
-    },
-    "error": {
-      "submitFailed": "शिकायत दर्ज करने में विफल। कृपया पुनः प्रयास करें।",
-      "invalidInput": "कृपया वैध संख्या दर्ज करें।"
-    }
-  },
-  "caseTracker": {
-    "title": "केस ट्रैक करें",
-    "caseNumberLabel": "केस नंबर",
-    "caseNumberPlaceholder": "केस नंबर दर्ज करें",
-    "trackButton": "केस ट्रैक करें",
-    "result": {
-      "title": "केस स्थिति",
-      "caseNumber": "केस नंबर: {caseNumber}",
-      "status": "स्थिति: {status}",
-      "filedOn": "दायर तिथि: {date}",
-      "timeline": "टाइमलाइन",
-      "stage": "चरण",
-      "date": "तिथि",
-      "notes": "टिप्पणी",
-      "resolution": "समाधान: {resolution}",
-      "notResolved": "अभी तक समाधान नहीं हुआ",
-      "contactInfo": "अधिक जानकारी के लिए, हमारे CSC सहायक से संपर्क करें।"
-    },
-    "error": {
-      "caseNotFound": "केस नहीं मिला। कृपया सही केस नंबर दर्ज करें।",
-      "invalidInput": "कृपया केवल संख्या और हाइफ़न दर्ज करें।",
-      "apiError": "केस लाने में त्रुटि हुई। कृपया बाद में प्रयास करें।"
-    }
-  },
-  "admin": {
-    "title": "एडमिन डैशबोर्ड",
-    "overview": "overview",
-    "fpsRisk": "एफपीएस जोखिम",
-    "districtHeatmap": "जिला हीटमैप",
-    "complaintTrends": "शिकायत प्रवृत्तियां",
-    "overviewCards": {
-      "totalCases": "कुल केस",
-      "openCases": " खुले केस",
-      "resolvedCases": "हल केस",
-      "avgResolutionTime": "औसत समाधान समय"
-    },
-    "fpsRiskTable": {
-      "fpsCode": "एफपीएस कोड",
-      "fpsName": "एफपीएस का नाम",
-      "district": "जिला",
-      "block": "ब्लॉक",
-      "complaints30d": "30 दिन की शिकायतें",
-      "complaints90d": "90 दिन की शिकायतें",
-      "resolutionRate": "समाधान दर",
-      "riskScore": "जोखिम स्कोर",
-      "riskTier": "जोखिम स्तर",
-      "low": "कम",
-      "medium": "मध्यम",
-      "high": "उच्च",
-      "critical": "गंभीर"
-    },
-    "heatmap": {
-      "legend": "सरक leyenda",
-      "low": "कम शिकायतें",
-      "medium": "मध्यम शिकायतें",
-      "high": "बहुत शिकायतें",
-      "critical": "अत्यधिक शिकायतें"
-    },
-    "trends": {
-      "title": "मासिक शिकायत प्रवृत्तियां",
-      "xAxis": "महीना",
-      "yAxis": "शिकायतों की संख्या"
-    },
-    "actions": {
-      "exportCsv": "सीएसवी में निर्यात करें",
-      "refresh": "ताज़ा करें"
-    }
-  },
-  "languageToggle": "भाषा",
   "common": {
-    "loading": "लोड हो रहा है...",
-    "error": "त्रुटि हुई",
-    "retry": "पुनः प्रयास करें",
-    "cancel": "रद्द करें",
-    "confirm": "पुष्टि करें",
-    "back": "वापस",
-    "next": "अगला",
-    "submit": "जमा करें",
-    "success": "सफल",
-    "failure": "असफल",
-    "warning": "चेतावनी",
-    "info": "सूचना"
+    "app_name": "Ration Saathi",
+    "loading": "Pratiksha karein...",
+    "error": "Kuch galat hua",
+    "submit": "Submit karein",
+    "back": "Piche",
+    "home": "Home"
+  },
+  "login": {
+    "title": "Login Karein",
+    "phone_label": "Mobile Number",
+    "otp_label": "OTP Darj Karein",
+    "get_otp": "OTP Prapt Karein",
+    "verify_otp": "Verify Karein"
+  },
+  "dashboard": {
+    "check_entitlement": "Entitlement Check",
+    "lodge_complaint": "Shikayat Darj Karein",
+    "track_case": "Case Track Karein",
+    "village_report": "Gaon ki Report"
+  },
+  "entitlement": {
+    "title": "Ration Jaanch",
+    "input_label": "Ration Card Number",
+    "not_found": "Card nahi mila",
+    "allocated": "Is mahine ka Ration",
+    "wheat": "Gehu",
+    "rice": "Chawal",
+    "sugar": "Cheeni"
+  },
+  "complaint": {
+    "title": "Shikayat Darj Karein",
+    "issue_type": "Samasya ka prakar",
+    "short_supply": "Kam ration mila",
+    "denial": "Ration dene se mana",
+    "quality": "Kharaab gunvatta",
+    "weighing": "Tol mein gadbadi",
+    "success": "Aapki shikayat darj ho gayi hai",
+    "case_id": "Case ID: {{id}}"
   }
 }

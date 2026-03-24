@@ -1,5 +1,6 @@
--- Enable UUID extension (already enabled in Supabase)
+-- Enable UUID and Crypto extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Table: ration_cards
 CREATE TABLE ration_cards (
@@ -10,10 +11,10 @@ CREATE TABLE ration_cards (
     block_code VARCHAR(10) NOT NULL,
     fps_code VARCHAR(12) NOT NULL,
     category VARCHAR(5) CHECK (category IN ('AAY','PHH','NPHH')),
-    household_head_name TEXT, -- store encrypted
+    household_head_name TEXT,
     total_members SMALLINT NOT NULL,
-    phone_hash VARCHAR(64), -- HMAC-SHA256 of phone for lookup without storing plaintext
-    phone_encrypted TEXT, -- AES-256-GCM encrypted phone number
+    phone_hash VARCHAR(64),
+    phone_encrypted TEXT,
     is_active BOOLEAN DEFAULT true,
     aadhaar_seeded BOOLEAN DEFAULT false,
     last_synced_at TIMESTAMPTZ,
@@ -24,12 +25,12 @@ CREATE TABLE ration_cards (
 CREATE TABLE monthly_allocations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ration_card_id UUID REFERENCES ration_cards(id),
-    month_year DATE NOT NULL, -- always first day of month, e.g. 2025-10-01
+    month_year DATE NOT NULL,
     rice_kg NUMERIC(6,2) DEFAULT 0,
     wheat_kg NUMERIC(6,2) DEFAULT 0,
     sugar_kg NUMERIC(6,2) DEFAULT 0,
-    actual_offtake_rice NUMERIC(6,2), -- from PoS logs, nullable
-    actual_offtake_wheat NUMERIC(6,2), -- nullable
+    actual_offtake_rice NUMERIC(6,2),
+    actual_offtake_wheat NUMERIC(6,2),
     fps_code VARCHAR(12),
     pos_transaction_id VARCHAR(50),
     source VARCHAR(20) CHECK (source IN ('api_sync','manual','mock')),
@@ -40,7 +41,7 @@ CREATE TABLE monthly_allocations (
 -- Table: grievance_cases
 CREATE TABLE grievance_cases (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    case_number VARCHAR(25) UNIQUE NOT NULL, -- e.g. RS-RJ-2025-001234
+    case_number VARCHAR(25) UNIQUE NOT NULL,
     ration_card_id UUID REFERENCES ration_cards(id),
     reporter_type VARCHAR(20) CHECK (reporter_type IN ('self','shg_leader','csc_operator')),
     reporter_phone_encrypted TEXT,
@@ -53,8 +54,8 @@ CREATE TABLE grievance_cases (
     expected_rice_kg NUMERIC(6,2),
     received_wheat_kg NUMERIC(6,2),
     received_rice_kg NUMERIC(6,2),
-    voice_testimony_r2_key TEXT, -- Cloudflare R2 object key, nullable
-    transcript TEXT, -- Bhashini STT output
+    voice_testimony_r2_key TEXT,
+    transcript TEXT,
     status VARCHAR(25) DEFAULT 'open' CHECK (status IN ('open','acknowledged','under_investigation','resolved','closed')),
     resolution_notes TEXT,
     government_ref_number VARCHAR(50),
@@ -107,7 +108,7 @@ CREATE TABLE users (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Indexes
+-- Indexes for performance
 CREATE INDEX idx_ration_cards_fps ON ration_cards(fps_code);
 CREATE INDEX idx_ration_cards_district ON ration_cards(district_code);
 CREATE INDEX idx_ration_cards_phone_hash ON ration_cards(phone_hash);

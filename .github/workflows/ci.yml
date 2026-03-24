@@ -1,15 +1,56 @@
-name: CI
-on: [push, pull_request]
+name: Ration Saathi CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
   test:
-    runs-runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with: {python-version: '3.12'}
-    - run: pip install -r backend/requirements.txt
-    - run: ruff check backend/app
-    - run: mypy backend/app --ignore-missing-imports
-    - name: Test
-      env: {ENCRYPTION_KEY: "test", DATABASE_URL: "sqlite:///./test.db"}
-      run: pytest --cov=backend/app
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        
+    - name: Lint with ruff
+      run: ruff check backend/app
+      
+    - name: Type check with mypy
+      run: mypy backend/app --ignore-missing-imports
+      
+    - name: Run tests with coverage
+      env:
+        ENCRYPTION_KEY: "test"
+        DATABASE_URL: "sqlite:///./test.db"
+        # Mock other required vars for tests
+        SUPABASE_URL: "https://mock.supabase.co"
+        SUPABASE_ANON_KEY: "mock"
+        SUPABASE_SERVICE_KEY: "mock"
+        UPSTASH_REDIS_REST_URL: "https://mock.upstash.io"
+        UPSTASH_REDIS_REST_TOKEN: "mock"
+        TWILIO_ACCOUNT_SID: "mock"
+        TWILIO_AUTH_TOKEN: "mock"
+        TWILIO_PHONE_NUMBER: "mock"
+        TWILIO_WEBHOOK_SECRET: "mock"
+        BHASHINI_USER_ID: "mock"
+        BHASHINI_API_KEY: "mock"
+        BHASHINI_PIPELINE_ID: "mock"
+        FAST2SMS_API_KEY: "mock"
+        GROQ_API_KEY: "mock"
+        R2_ACCOUNT_ID: "mock"
+        R2_ACCESS_KEY_ID: "mock"
+        R2_SECRET_ACCESS_KEY: "mock"
+        R2_BUCKET_NAME: "mock"
+        JWT_SECRET_KEY: "mock"
+      run: |
+        pytest --cov=backend/app --cov-fail-under=75

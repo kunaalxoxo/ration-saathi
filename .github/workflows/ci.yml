@@ -30,7 +30,8 @@ jobs:
       
     - name: Run tests with coverage
       env:
-        ENCRYPTION_KEY: "test"
+        PYTHONPATH: backend
+        ENCRYPTION_KEY: "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="
         DATABASE_URL: "sqlite:///./test.db"
         # Mock other required vars for tests
         SUPABASE_URL: "https://mock.supabase.co"

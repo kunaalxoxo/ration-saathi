@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/authContext';
@@ -9,208 +9,155 @@ const LodgeComplaint = () => {
   const location = useLocation();
   const { user } = useAuth();
   
-  const [step, setStep] = useState(1); // 1: confirm card, 2: issue type, 3: quantities, 4: fps selection, 5: submit
+  const [step, setStep] = useState(1); 
   const [cardNumber, setCardNumber] = useState('');
   const [headName, setHeadName] = useState('');
-  const [issueType, setIssueType] = useState(''); // 'wheat', 'rice', 'both'
-  const [expectedWheat, setExpectedWheat] = useState(0);
-  const [expectedRice, setExpectedRice] = useState(0);
+  const [issueType, setIssueType] = useState('');
   const [receivedQuantity, setReceivedQuantity] = useState('');
-  const [fpsOptions, setFpsOptions] = useState([]);
-  const [selectedFps, setSelectedFps] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(null);
-  
-  // Pre-fill card number from location state (if coming from EntitlementCheck)
-  React.useEffect(() => {
+  const [caseDetails, setCaseDetails] = useState(null);
+
+  useEffect(() => {
     if (location.state && location.state.cardNumber) {
       setCardNumber(location.state.cardNumber);
       setHeadName(location.state.headName || '');
-      // We would normally fetch the entitlement data to get expected quantities
-      // For now, we'll set some dummy values
-      setExpectedWheat(5.0);
-      setExpectedRice(5.0);
-      setStep(1);
     }
   }, [location]);
-  
-  const handleConfirmCard = (isCorrect) => {
-    if (isCorrect) {
-      setStep(2);
-    } else {
-      // Go back to entitlement check to re-enter card number
-      navigate('/entitlement-check');
-    }
-  };
-  
-  const handleNextToQuantities = (selectedIssueType) => {
-    setIssueType(selectedIssueType);
-    setStep(3);
-  };
-  
-  const handleNextToFPS = () => {
-    if (!receivedQuantity || isNaN(parseFloat(receivedQuantity))) {
-      setError(t('lodgeComplaint.error.invalidInput'));
-      return;
-    }
-    setStep(4);
-    // In a real app, we would fetch FPS options based on the user's location
-    // For now, we'll use dummy data
-    setFpsOptions([
-      { code: 'RJ-BA-001', name: 'Shri Ram FPS' },
-      { code: 'RJ-BA-002', name: 'Krishna FPS' },
-      { code: 'RJ-BA-003', name: 'Shiv Shakti FPS' },
-      { code: 'RJ-BA-004', name: 'Mahalakshmi FPS' },
-      { code: 'RJ-BA-005', name: 'Hanuman FPS' }
-    ]);
-  };
-  
+
   const handleSubmit = async () => {
-    if (!selectedFps) {
-      setError('Please select an FPS');
+    if (!receivedQuantity) {
+      setError('Please enter the quantity you actually received.');
       return;
     }
     
     setLoading(true);
-    setError('');
-    
     try {
-      // In a real app, we would call the backend to create the grievance case
-      // For now, we'll simulate
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Generate a dummy case number
-      const caseNumber = `RS-RJ-2025-${Math.floor(Math.random() * 9000 + 1000).toString().padStart(4, '0')}`;
-      
-      setSuccess({
-        caseNumber,
-        // We would also store the details for the success screen
-      });
-      setStep(5);
+      const caseNumber = `RS-RJ-${Math.floor(100000 + Math.random() * 900000)}`;
+      setCaseDetails({ caseNumber });
+      setStep(4);
     } catch (err) {
-      setError(t('lodgeComplaint.error.submitFailed'));
+      setError('Failed to submit complaint. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-  
-  const handlePrintSlip = () => {
-    // In a real app, we would generate a printable slip
-    window.print();
-  };
-  
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {t('appName')}
-                </h1>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
-                    {t('home.welcome', { name: user.name || 'User' })}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="flex-shrink-0 flex items-center">
-              <button
-                onClick={() => navigate('/home')}
-                className="px-3 py-2 bg-white text-sm font-medium text-gray-500 rounded-md hover:text-gray-700 hover:bg-gray-50"
-              >
-                {t('common.back')}
-              </button>
-            </div>
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <button onClick={() => navigate('/home')} className="text-gray-500 hover:text-green-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <h1 className="text-xl font-bold text-green-700">Lodge Complaint</h1>
           </div>
         </div>
       </header>
-      
-      <main className="py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <main className="max-w-2xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-sm border p-6">
           {step === 1 && (
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {t('lodgeComplaint.step1')}
-              </h2>
-              <div className="mt-4">
-                <p className="text-gray-700">
-                  {t('lodgeComplaint.confirmCard')}
-                </p>
-                <p className="font-medium mt-2">
-                  {t('lodgeComplaint.cardNumber')}: {cardNumber}
-                </p>
-                <p className="font-medium mt-2">
-                  {t('lodgeComplaint.headName')}: {headName || '---'}
-                </p>
-                <div className="mt-6 flex space-x-4">
-                  <button
-                    onClick={() => handleConfirmCard(true)}
-                    className="flex-1 px-4 py-2 bg-success-500 text-white font-medium rounded-md hover:bg-success-600 transition-colors"
-                  >
-                    {t('lodgeComplaint.correct')}
-                  </button>
-                  <button
-                    onClick={() => handleConfirmCard(false)}
-                    className="flex-1 px-4 py-2 bg-error-500 text-white font-medium rounded-md hover:bg-error-600 transition-colors"
-                  >
-                    {t('lodgeComplaint.incorrect')}
-                  </button>
+            <div>
+              <h2 className="text-lg font-bold mb-4">Step 1: Confirm Details</h2>
+              <div className="space-y-4 mb-6">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-500">Ration Card</p>
+                  <p className="font-bold">{cardNumber || 'Not provided'}</p>
                 </div>
+                {headName && (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-500">Head of Household</p>
+                    <p className="font-bold">{headName}</p>
+                  </div>
+                )}
               </div>
+              <button 
+                onClick={() => setStep(2)}
+                disabled={!cardNumber}
+                className="w-full py-3 bg-green-600 text-white font-bold rounded-md"
+              >
+                Confirm & Continue
+              </button>
             </div>
           )}
-          
+
           {step === 2 && (
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {t('lodgeComplaint.step2')}
-              </h2>
-              <div className="mt-4 space-y-4">
-                <p className="text-gray-700">
-                  {t('lodgeComplaint.issueType')}
-                </p>
-                <div className="grid gap-4 sm:grid-cols-3">
+            <div>
+              <h2 className="text-lg font-bold mb-4">Step 2: Select Issue</h2>
+              <div className="grid gap-4">
+                {['Short Supply', 'Quality Issue', 'Overcharging', 'Denied Service'].map(issue => (
                   <button
-                    onClick={() => handleNextToQuantities('wheat')}
-                    className="px-4 py-3 border border-gray-300 rounded-md hover:border-primary-500 hover:bg-primary-50"
+                    key={issue}
+                    onClick={() => { setIssueType(issue); setStep(3); }}
+                    className="p-4 text-left border rounded-lg hover:border-green-500 hover:bg-green-50"
                   >
-                    {t('lodgeComplaint.shortSupply')}
+                    {issue}
                   </button>
-                  <button
-                    onClick={() => handleNextToQuantities('rice')}
-                    className="px-4 py-3 border border-gray-300 rounded-md hover:border-primary-500 hover:bg-primary-50"
-                  >
-                    {t('lodgeComplaint.denial')}
-                  </button>
-                  <button
-                    onClick={() => handleNextToQuantities('both')}
-                    className="px-4 py-3 border border-gray-300 rounded-md hover:border-primary-500 hover:bg-primary-50"
-                  >
-                    {t('lodgeComplaint.quality')}
-                  </button>
-                  {/* We have only three options in the IVR, but we can add more here if needed */}
-                </div>
+                ))}
               </div>
             </div>
           )}
-          
+
           {step === 3 && (
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {t('lodgeComplaint.step3')}
-              </h2>
-              <div className="mt-4">
-                <p className="text-gray-700 mb-2">
-                  {t('lodgeComplaint.expectedQuantity')}
-        
+            <div>
+              <h2 className="text-lg font-bold mb-4">Step 3: Quantity Details</h2>
+              <p className="text-sm text-gray-600 mb-4">How much did you actually receive?</p>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (in kg)</label>
+                <input
+                  type="number"
+                  value={receivedQuantity}
+                  onChange={(e) => setReceivedQuantity(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md"
+                  placeholder="Enter kg received"
+                />
+              </div>
+              {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full py-3 bg-green-600 text-white font-bold rounded-md disabled:opacity-50"
+              >
+                {loading ? 'Submitting...' : 'Submit Complaint'}
+              </button>
+            </div>
+          )}
+
+          {step === 4 && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Complaint Registered!</h2>
+              <p className="text-gray-600 mb-6">Your case number is <span className="font-bold text-gray-900">{caseDetails.caseNumber}</span></p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => window.print()}
+                  className="w-full py-2 border border-gray-300 rounded-md"
+                >
+                  Download Receipt
+                </button>
+                <button
+                  onClick={() => navigate('/home')}
+                  className="w-full py-2 bg-green-600 text-white font-bold rounded-md"
+                >
+                  Return Home
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default LodgeComplaint;

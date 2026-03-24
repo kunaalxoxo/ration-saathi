@@ -1,34 +1,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../lib/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const CaseTracker = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuth();
   
   const [caseNumber, setCaseNumber] = useState('');
   const [caseData, setCaseData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user, navigate]);
-  
+
   const handleTrackCase = async () => {
     if (!caseNumber) {
-      setError(t('caseTracker.error.invalidInput'));
-      return;
-    }
-    
-    // Simple validation: case number format RS-XX-2025-XXXX
-    const caseNumberRegex = /^RS-[A-Z]{2}-2025-\d{4}$/;
-    if (!caseNumberRegex.test(caseNumber)) {
-      setError(t('caseTracker.error.invalidInput'));
+      setError('Please enter a case number.');
       return;
     }
     
@@ -37,167 +22,108 @@ const CaseTracker = () => {
     setCaseData(null);
     
     try {
-      // In a real app, we would call the backend API to get the case details
-      // For now, we'll simulate with some dummy data
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Simulate fetching case data
-      const dummyData = {
+      const dummyCase = {
         caseNumber: caseNumber,
-        status: 'under_investigation', // open, acknowledged, under_investigation, resolved, closed
-        filedOn: new Date('2025-10-15'),
-        timeline: [
-          { stage: t('common.created'), date: new Date('2025-10-15'), notes: t('common.caseFiledNote') },
-          { stage: t('common.acknowledged'), date: new Date('2025-10-16'), notes: t('common.caseAcknowledgedNote') },
-          { stage: t('common.underInvestigation'), date: new Date('2025-10-20'), notes: t('common.investigationNote') }
-        ],
-        resolution: t('caseTracker.notResolved')
+        status: 'under_investigation',
+        issueType: 'Short Supply',
+        dateReported: '2025-10-15',
+        lastUpdate: '2025-10-18',
+        updates: [
+          { date: '2025-10-18', text: 'Official assigned to investigate the FPS.' },
+          { date: '2025-10-15', text: 'Grievance registered and sent to Block Officer.' }
+        ]
       };
       
-      // If the status is resolved, we can add a resolution note
-      if (dummyData.status === 'resolved' || dummyData.status === 'closed') {
-        dummyData.resolution = t('caseTracker.resolutionNote', { 
-          action: t('common.actionTaken'), 
-          amount: '2.5' 
-        });
-      }
-      
-      setCaseData(dummyData);
+      setCaseData(dummyCase);
     } catch (err) {
-      setError(t('caseTracker.error.apiError'));
+      setError('Could not find case details. Please check the number.');
     } finally {
       setLoading(false);
     }
   };
-  
-  if (!user) {
-    return null; // Redirect handled by useEffect
-  }
-  
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'open': return 'bg-blue-100 text-blue-700';
+      case 'under_investigation': return 'bg-orange-100 text-orange-700';
+      case 'resolved': return 'bg-green-100 text-green-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {t('appName')}
-                </h1>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
-                    {t('home.welcome', { name: user.name || 'User' })}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="flex-shrink-0 flex items-center">
-              <button
-                onClick={() => navigate('/home')}
-                className="px-3 py-2 bg-white text-sm font-medium text-gray-500 rounded-md hover:text-gray-700 hover:bg-gray-50"
-              >
-                {t('common.back')}
-              </button>
-            </div>
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <button onClick={() => navigate('/home')} className="text-gray-500 hover:text-green-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <h1 className="text-xl font-bold text-green-700">Track Grievance</h1>
           </div>
         </div>
       </header>
-      
-      <main className="py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {t('caseTracker.title')}
-            </h2>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleTrackCase();
-            }} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('caseTracker.caseNumberLabel')}
-                </label>
-                <input
-                  type="text"
-                  value={caseNumber}
-                  onChange={(e) => setCaseNumber(e.target.value.replace(/[^A-Z0-9\-]/g, '').toUpperCase())}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder={t('caseTracker.caseNumberPlaceholder')}
-                  maxLength="15"
-                />
-                {error && (
-                  <p className="mt-2 text-sm text-red-500">
-                    {error}
-                  </p>
-                )}
-              </div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Case Number</label>
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={caseNumber}
+                onChange={(e) => setCaseNumber(e.target.value.toUpperCase())}
+                className="flex-1 px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="e.g. RS-RJ-123456"
+              />
               <button
-                type="submit"
+                onClick={handleTrackCase}
                 disabled={loading || !caseNumber}
-                className="w-full px-4 py-2 bg-primary-600 text-white font-medium rounded-md disabled:opacity-50 hover:bg-primary-700 transition-colors"
+                className="px-6 py-2 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 disabled:opacity-50"
               >
-                {loading ? t('common.loading') : t('caseTracker.trackButton')}
+                {loading ? 'Tracking...' : 'Track'}
               </button>
-            </form>
-            
-            {caseData && (
-              <div className="mt-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  {t('caseTracker.result.title')}
-                </h3>
-                <div className="space-y-4 text-gray-700">
-                  <p>
-                    <span className="font-medium">{t('caseTracker.result.caseNumber')}:</span> 
-                    {caseData.caseNumber}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t('caseTracker.result.status')}:</span> 
-                    { 
-                      // Map status to translation
-                      statusMap = {
-                        'open': t('common.statusOpen'),
-                        'acknowledged': t('common.statusAcknowledged'),
-                        'under_investigation': t('common.statusUnderInvestigation'),
-                        'resolved': t('common.statusResolved'),
-                        'closed': t('common.statusClosed')
-                      };
-                      statusMap[caseData.status] || caseData.status
-                    }
-                  </p>
-                  <p>
-                    <span className="font-medium">{t('caseTracker.result.filedOn')}:</span> 
-                    {caseData.filedOn.toLocaleDateString()}
-                  </p>
-                  
-                  <div className="mt-4">
-                    <h4 className="text-lg font-medium text-gray-900 mb-2">
-                      {t('caseTracker.result.timeline')}
-                    </h4>
-                    <div className="space-y-3">
-                      {caseData.timeline.map((item, index) => (
-                        <div key={index} className="flex items-start space-x-3">
-                          <div className="flex-shrink-0">
-                            <div className="h-2.5 w-2.5 bg-primary-500 rounded-full"/>
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-700">
-                              {item.stage}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {item.date.toLocaleDateString()}
-                            </p>
-                            {item.notes && (
-                              <p className="text-xs text-gray-400 mt-0.5">
-                                {item.notes}
-                              </p>
-                            )}
-                          </div>
-                        >
-                      ))}
+            </div>
+          </div>
+
+          {error && <div className="p-4 bg-red-50 text-red-700 rounded-md mb-6">{error}</div>}
+
+          {caseData && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-start border-b pb-4">
+                <div>
+                  <h3 className="text-lg font-bold">{caseData.caseNumber}</h3>
+                  <p className="text-sm text-gray-500">Reported on {caseData.dateReported}</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${getStatusColor(caseData.status)}`}>
+                  {caseData.status.replace('_', ' ')}
+                </span>
+              </div>
+
+              <div>
+                <h4 className="font-bold mb-3">Timeline</h4>
+                <div className="relative pl-8 space-y-6">
+                  <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                  {caseData.updates.map((update, idx) => (
+                    <div key={idx} className="relative">
+                      <div className="absolute -left-8 top-1.5 w-4 h-4 rounded-full bg-green-500 border-4 border-white"></div>
+                      <p className="text-xs text-gray-400 font-medium mb-1">{update.date}</p>
+                      <p className="text-sm text-gray-700">{update.text}</p>
                     </div>
-                  </d
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default CaseTracker;

@@ -15,21 +15,16 @@ const MyVillageReport = () => {
   useEffect(() => {
     if (!user) {
       navigate('/login');
-    }
-  }, [user, navigate]);
-  
-  useEffect(() => {
-    if (user) {
+    } else {
       fetchReport();
     }
-  }, [user]);
+  }, [user, navigate]);
   
   const fetchReport = async () => {
     setLoading(true);
     setError('');
     try {
-      // In a real app, we would call the backend API to get the village report
-      // For now, we'll simulate with some dummy data
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       const dummyData = {
@@ -42,152 +37,97 @@ const MyVillageReport = () => {
         fpsPerformance: [
           { fpsCode: 'RJ-BA-001', name: 'Shri Ram FPS', complaints: 2, resolutionRate: 80 },
           { fpsCode: 'RJ-BA-002', name: 'Krishna FPS', complaints: 0, resolutionRate: 100 },
-          { fpsCode: 'RJ-BA-003', name: 'Shiv Shakti FPS', complaints: 4, resolutionRate: 60 },
-          { fpsCode: 'RJ-BA-004', name: 'Mahalakshmi FPS', complaints: 1, resolutionRate: 90 },
-          { fpsCode: 'RJ-BA-005', name: 'Hanuman FPS', complaints: 1, resolutionRate: 70 }
+          { fpsCode: 'RJ-BA-003', name: 'Shiv Shakti FPS', complaints: 4, resolutionRate: 60 }
         ]
       };
       
       setReportData(dummyData);
     } catch (err) {
-      setError(t('common.error'));
+      setError('Failed to load village report.');
     } finally {
       setLoading(false);
     }
   };
   
-  if (!user) {
-    return null; // Redirect handled by useEffect
-  }
-  
+  if (!user) return null;
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {t('appName')}
-                </h1>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
-                    {t('home.welcome', { name: user.name || 'User' })}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="flex-shrink-0 flex items-center">
-              <button
-                onClick={() => navigate('/home')}
-                className="px-3 py-2 bg-white text-sm font-medium text-gray-500 rounded-md hover:text-gray-700 hover:bg-gray-50"
-              >
-                {t('common.back')}
-              </button>
-            </div>
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <button onClick={() => navigate('/home')} className="text-gray-500 hover:text-green-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <h1 className="text-xl font-bold text-green-700">Village Report</h1>
           </div>
         </div>
       </header>
       
-      <main className="py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {t('home.myVillageReport')}
-            </h2>
-          </div>
-          
-          {loading && (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-              <p className="mt-4 text-gray-500">{t('common.loading')}</p>
-            </div>
-          )}
-          
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6">
-              {error}
-            </div>
-          )}
-          
-          {!loading && !error && reportData && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  {t('home.villageReportTitle', { villageName: reportData.villageName })}
-                </h3>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-center">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500">
-                      {t('home.totalRationCards')}
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {reportData.totalRationCards}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500">
-                      {t('home.activeCards')}
-                    </p>
-                    <p className="text-2xl font-bold text-success-600">
-                      {reportData.activeCards}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500">
-                      {t('home.totalCasesThisMonth')}
-                    </p>
-                    <p className="text-2xl font-bold text-warning-600">
-                      {reportData.totalCasesThisMonth}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500">
-                      {t('home.resolvedCases')}
-                    </p>
-                    <p className="text-2xl font-bold text-success-600">
-                      {reportData.resolvedCases}
-                    </p>
-                  </div>
+      <main className="max-w-5xl mx-auto px-4 py-8">
+        {loading && <p className="text-center text-gray-500">Loading village statistics...</p>}
+        {error && <div className="p-4 bg-red-50 text-red-700 rounded-md mb-6">{error}</div>}
+        
+        {reportData && (
+          <div className="space-y-8">
+            <div className="bg-white rounded-xl shadow-sm border p-6">
+              <h3 className="text-lg font-bold mb-6">Overview: {reportData.villageName}</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 bg-blue-50 rounded-lg text-center">
+                  <p className="text-xs text-blue-600 font-bold uppercase mb-1">Total Cards</p>
+                  <p className="text-2xl font-bold text-blue-900">{reportData.totalRationCards}</p>
+                </div>
+                <div className="p-4 bg-green-50 rounded-lg text-center">
+                  <p className="text-xs text-green-600 font-bold uppercase mb-1">Active</p>
+                  <p className="text-2xl font-bold text-green-900">{reportData.activeCards}</p>
+                </div>
+                <div className="p-4 bg-orange-50 rounded-lg text-center">
+                  <p className="text-xs text-orange-600 font-bold uppercase mb-1">Grievances</p>
+                  <p className="text-2xl font-bold text-orange-900">{reportData.totalCasesThisMonth}</p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded-lg text-center">
+                  <p className="text-xs text-purple-600 font-bold uppercase mb-1">Resolved</p>
+                  <p className="text-2xl font-bold text-purple-900">{reportData.resolvedCases}</p>
                 </div>
               </div>
-              
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {t('home.fpsPerformance')}
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.fpsRiskTable.fpsCode')}
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.fpsRiskTable.fpsName')}
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.fpsRiskTable.complaints30d')}
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.fpsRiskTable.resolutionRate')}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {reportData.fpsPerformance.map((fps, index) => (
-                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            {fps.fpsCode}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            {fps.name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            {fps.complaints}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+              <h3 className="text-lg font-bold p-6 border-b">FPS Performance</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 text-left">
+                    <tr>
+                      <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">FPS Code</th>
+                      <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Name</th>
+                      <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Complaints</th>
+                      <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Resolution</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {reportData.fpsPerformance.map((fps) => (
+                      <tr key={fps.fpsCode}>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{fps.fpsCode}</td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{fps.name}</td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{fps.complaints}</td>
+                        <td className="px-6 py-4 text-sm">
+                          <span className={`px-2 py-1 rounded text-xs font-bold ${fps.resolutionRate >= 80 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
                             {fps.resolutionRate}%
-                         
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default MyVillageReport;

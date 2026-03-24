@@ -13,15 +13,9 @@ const EntitlementCheck = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user, navigate]);
-  
   const handleCheckEntitlement = async () => {
     if (!cardNumber || cardNumber.length < 10) {
-      setError(t('entitlementCheck.error.invalidInput'));
+      setError('Please enter a valid 10-digit ration card number.');
       return;
     }
     
@@ -30,11 +24,9 @@ const EntitlementCheck = () => {
     setEntitlementData(null);
     
     try {
-      // In a real app, we would call the backend API
-      // For now, we'll simulate with some dummy data
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Simulate fetching entitlement data
       const dummyData = {
         cardNumber: cardNumber,
         headName: "Ram Kumar",
@@ -49,141 +41,103 @@ const EntitlementCheck = () => {
       
       setEntitlementData(dummyData);
     } catch (err) {
-      setError(t('entitlementCheck.error.apiError'));
+      setError('Failed to fetch entitlement details. Please try again.');
     } finally {
       setLoading(false);
     }
   };
   
-  if (!user) {
-    return null; // Redirect handled by useEffect
-  }
-  
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {t('appName')}
-                </h1>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
-                    {t('home.welcome', { name: user.name || 'User' })}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="flex-shrink-0 flex items-center">
-              <button
-                onClick={() => navigate('/home')}
-                className="px-3 py-2 bg-white text-sm font-medium text-gray-500 rounded-md hover:text-gray-700 hover:bg-gray-50"
-              >
-                {t('common.back')}
-              </button>
-            </div>
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <button onClick={() => navigate('/home')} className="text-gray-500 hover:text-green-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <h1 className="text-xl font-bold text-green-700">Check Entitlement</h1>
           </div>
         </div>
       </header>
       
-      <main className="py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {t('entitlementCheck.title')}
-            </h2>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleCheckEntitlement();
-            }} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('entitlementCheck.cardNumberLabel')}
-                </label>
-                <input
-                  type="tel"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder={t('entitlementCheck.cardNumberPlaceholder')}
-                  maxLength="10"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading || !cardNumber || cardNumber.length !== 10}
-                className="w-full px-4 py-2 bg-primary-600 text-white font-medium rounded-md disabled:opacity-50 hover:bg-primary-700 transition-colors"
-              >
-                {loading ? t('common.loading') : t('entitlementCheck.checkButton')}
-              </button>
-            </form>
-            
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mt-4">
-                {error}
-              </div>
-            )}
-            
-            {entitlementData && (
-              <div className="mt-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  {t('entitlementCheck.result.title')}
-                </h3>
-                <div className="space-y-4 text-gray-700">
-                  <p>
-                    <span className="font-medium">{t('entitlementCheck.result.cardNumber')}:</span> 
-                    {entitlementData.cardNumber}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t('entitlementCheck.result.headName')}:</span> 
-                    {entitlementData.headName}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t('entitlementCheck.result.members')}:</span> 
-                    {entitlementData.members}
-                  </p>
-                  <div className="mt-2">
-                    <span className="font-medium">{t('entitlementCheck.result.allocation')}:</span>
-                    <div className="mt-2 space-y-2">
-                      <p>
-                        <span className="font-medium">{t('entitlementCheck.result.wheat')}:</span> 
-                        {entitlementData.allocation.wheat} kg
-                      </p>
-                      <p>
-                        <span className="font-medium">{t('entitlementCheck.result.rice')}:</span> 
-                        {entitlementData.allocation.rice} kg
-                      </p>
-                      <p>
-                        <span className="font-medium">{t('entitlementCheck.result.sugar')}:</span> 
-                        {entitlementData.allocation.sugar} kg
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <button
-                      onClick={() => navigate(`/lodge-complaint?cardNumber=${entitlementData.cardNumber}`)}
-                      className="w-full px-4 py-2 bg-warning-500 text-white font-medium rounded-md hover:bg-warning-600 transition-colors"
-                    >
-                      {t('entitlementCheck.result.lessReceived')}
-                    </button>
-                    <button
-                      onClick={() => window.print()}
-                      className="w-full mt-2 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors"
-                    >
-                      {t('entitlementCheck.result.printSlip')}
-                    </div>
-                  </div>
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <form onSubmit={(e) => { e.preventDefault(); handleCheckEntitlement(); }}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Ration Card Number
+              </label>
+              <input
+                type="tel"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ''))}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 outline-none"
+                placeholder="Enter 10 digit number"
+                maxLength="10"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading || cardNumber.length !== 10}
+              className="w-full py-2 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 disabled:opacity-50"
+            >
+              {loading ? 'Searching...' : 'Check Entitlement'}
+            </button>
+          </form>
+
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-md border border-red-100">
+              {error}
+            </div>
+          )}
+
+          {entitlementData && (
+            <div className="mt-8 border-t pt-6">
+              <h3 className="text-lg font-bold mb-4">Entitlement Details - {entitlementData.month}</h3>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-xs text-gray-500">Household Head</p>
+                  <p className="font-bold">{entitlementData.headName}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <p className="text-xs text-gray-500">Members</p>
+                  <p className="font-bold">{entitlementData.members}</p>
                 </div>
               </div>
-            )}
-          </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center p-3 border rounded">
+                  <span className="font-medium text-gray-700">Wheat (Gehu)</span>
+                  <span className="font-bold text-green-700">{entitlementData.allocation.wheat} kg</span>
+                </div>
+                <div className="flex justify-between items-center p-3 border rounded">
+                  <span className="font-medium text-gray-700">Rice (Chawal)</span>
+                  <span className="font-bold text-green-700">{entitlementData.allocation.rice} kg</span>
+                </div>
+                <div className="flex justify-between items-center p-3 border rounded">
+                  <span className="font-medium text-gray-700">Sugar (Cheeni)</span>
+                  <span className="font-bold text-green-700">{entitlementData.allocation.sugar} kg</span>
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-3">
+                <button
+                  onClick={() => navigate('/lodge-complaint', { state: { cardNumber: entitlementData.cardNumber, headName: entitlementData.headName } })}
+                  className="w-full py-3 bg-orange-500 text-white font-bold rounded-md hover:bg-orange-600"
+                >
+                  I Received Less Ration
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="w-full py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                >
+                  Print Slip
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -98,11 +98,11 @@ def seed():
                 gc = GrievanceCase(
                     case_number="RS-RJ-2025-00001",
                     ration_card_id=rc.id,
-                    reporter_type="citizen",
+                    reporter_type="self",
                     fps_code=rc.fps_code,
                     district_code=rc.district_code,
                     block_code=rc.block_code,
-                    issue_type="wheat",
+                    issue_type="short_supply",
                     reported_month_year=date(2025, 10, 1),
                     expected_wheat_kg=5.0,
                     received_wheat_kg=2.0,

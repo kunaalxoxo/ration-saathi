@@ -7,6 +7,7 @@ import LodgeComplaint from './pages/LodgeComplaint';
 import CaseTracker from './pages/CaseTracker';
 import MyVillageReport from './pages/MyVillageReport';
 import AdminDashboard from './pages/AdminDashboard';
+import Layout from './components/Layout';
 import { useAuth } from './lib/authContext';
 
 function App() {
@@ -16,46 +17,47 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate replace to="/login" />} />
       <Route path="/login" element={<Login />} />
-      {/* Protected routes */}
+      
+      {/* Protected routes wrapped in Layout */}
       <Route
         path="/home"
         element={
-          user ? <Home /> : <Navigate replace to="/login" />
+          user ? <Layout><Home /></Layout> : <Navigate replace to="/login" />
         }
       />
       <Route
         path="/entitlement-check"
         element={
-          user ? <EntitlementCheck /> : <Navigate replace to="/login" />
+          user ? <Layout><EntitlementCheck /></Layout> : <Navigate replace to="/login" />
         }
       />
       <Route
         path="/lodge-complaint"
         element={
-          user ? <LodgeComplaint /> : <Navigate replace to="/login" />
+          user ? <Layout><LodgeComplaint /></Layout> : <Navigate replace to="/login" />
         }
       />
       <Route
         path="/case-tracker"
         element={
-          user ? <CaseTracker /> : <Navigate replace to="/login" />
+          user ? <Layout><CaseTracker /></Layout> : <Navigate replace to="/login" />
         }
       />
       <Route
         path="/my-village-report"
         element={
-          user ? <MyVillageReport /> : <Navigate replace to="/login" />
+          user ? <Layout><MyVillageReport /></Layout> : <Navigate replace to="/login" />
         }
       />
       <Route
         path="/admin"
         element={
           user && (user.role === 'district_admin' || user.role === 'state_admin' || user.role === 'super_admin')
-            ? <AdminDashboard />
+            ? <Layout><AdminDashboard /></Layout>
             : <Navigate replace to="/home" />
         }
       />
-      {/* Fallback for not found */}
+      
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

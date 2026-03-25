@@ -72,22 +72,22 @@ const Login = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-600"></span>
               </span>
-              Digital India Initiative
+              {t('login.digitalIndia')}
             </div>
             <h1 className="text-6xl font-black text-slate-900 leading-[1.1] tracking-tight">
-              Empowering <br />
-              <span className="gradient-text">Citizens</span> through <br />
-              Smart Governance.
+              {t('login.empowering')} <br />
+              <span className="gradient-text">{t('login.citizens')}</span> {t('login.through')} <br />
+              {t('login.smartGovernance')}
             </h1>
             <p className="text-lg text-slate-500 max-w-md font-medium leading-relaxed">
-              Access the Unified Public Distribution System portal for seamless entitlement management and grievance redressal.
+              {t('login.portalAccessDesc')}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-6 pt-4">
             {[
-              { icon: ShieldCheck, title: "Secure Access", desc: "Multi-factor authentication" },
-              { icon: CheckCircle2, title: "ONORC Enabled", desc: "Nation-wide portability" }
+              { icon: ShieldCheck, title: t('login.secureAccess'), desc: t('login.secureAccessDesc') },
+              { icon: CheckCircle2, title: t('login.onorcEnabled'), desc: t('login.onorcEnabledDesc') }
             ].map((item, i) => (
               <div key={i} className="p-5 glass-card rounded-2xl space-y-3">
                 <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
@@ -119,20 +119,20 @@ const Login = () => {
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-100 hover:bg-slate-50 transition-all font-bold text-[10px] uppercase tracking-wider text-slate-500"
                   >
                     <Globe size={14} />
-                    {i18n.language === 'hi' ? 'हिंदी' : 'English'}
+                    {i18n.language === 'hi' ? 'English' : 'हिंदी'}
                   </button>
                 </div>
 
                 <div className="mb-8">
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Portal Sign In</h2>
-                  <p className="text-sm text-slate-400 font-medium mt-1">Please enter your registered mobile number</p>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">{t('login.title')}</h2>
+                  <p className="text-sm text-slate-400 font-medium mt-1">{t('login.subtitle')}</p>
                 </div>
 
                 <div className="space-y-6">
                   {step === 1 ? (
                     <div className="space-y-5">
                       <div>
-                        <label className="label">Mobile Number</label>
+                        <label className="label">{t('login.phoneNumber')}</label>
                         <div className="relative group">
                           <div className="absolute left-5 top-1/2 -translate-y-1/2 flex items-center gap-2 text-slate-400 border-r border-slate-100 pr-3 transition-colors group-focus-within:text-brand-600">
                             <Phone size={16} />
@@ -153,20 +153,20 @@ const Login = () => {
                         disabled={loading || phoneNumber.length !== 10}
                         className="btn btn-primary w-full h-[56px] gap-3 text-base"
                       >
-                        {loading ? <Loader2 className="animate-spin" /> : <>Get Verification Code <ArrowRight size={18} /></>}
+                        {loading ? <Loader2 className="animate-spin" /> : <>{t('login.getOtp')} <ArrowRight size={18} /></>}
                       </button>
                     </div>
                   ) : (
                     <div className="space-y-5">
                       <div className="p-4 bg-brand-50/50 rounded-2xl border border-brand-100/50 flex justify-between items-center mb-2">
                         <div className="flex flex-col">
-                          <span className="text-[9px] uppercase font-bold text-brand-400 tracking-widest">Verify identity for</span>
+                          <span className="text-[9px] uppercase font-bold text-brand-400 tracking-widest">{t('login.verify')}</span>
                           <span className="text-sm text-brand-700 font-bold">+91 {phoneNumber}</span>
                         </div>
-                        <button onClick={() => setStep(1)} className="text-[10px] text-brand-600 font-bold hover:text-brand-800 underline underline-offset-4 uppercase tracking-wider">Edit</button>
+                        <button onClick={() => setStep(1)} className="text-[10px] text-brand-600 font-bold hover:text-brand-800 underline underline-offset-4 uppercase tracking-wider">{t('login.edit')}</button>
                       </div>
                       <div>
-                        <label className="label">Enter 6-Digit OTP</label>
+                        <label className="label">{t('login.otp')}</label>
                         <div className="relative group">
                           <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-brand-600">
                             <Lock size={18} />
@@ -187,10 +187,10 @@ const Login = () => {
                         disabled={loading || otp.length !== 6}
                         className="btn btn-primary w-full h-[60px] text-base shadow-brand-200"
                       >
-                        {loading ? <Loader2 className="animate-spin" /> : 'Enter Dashboard'}
+                        {loading ? <Loader2 className="animate-spin" /> : t('login.verify')}
                       </button>
                       <div className="text-center">
-                        <p className="text-xs text-slate-400 font-medium">Didn't receive code? <button className="text-brand-600 font-bold hover:underline">Resend OTP</button></p>
+                        <p className="text-xs text-slate-400 font-medium">{t('login.didntReceive')} <button className="text-brand-600 font-bold hover:underline">{t('login.resendOtp')}</button></p>
                       </div>
                     </div>
                   )}
@@ -212,14 +212,14 @@ const Login = () => {
                           </div>
                         ))}
                      </div>
-                     <p className="text-[11px] text-slate-400 font-medium">Joined by <span className="text-slate-900 font-bold">2.4k+</span> officials today</p>
+                     <p className="text-[11px] text-slate-400 font-medium">{t('login.joinedBy')} <span className="text-slate-900 font-bold">2.4k+</span> {t('login.officialsToday')}</p>
                    </div>
                 </div>
               </div>
             </div>
             
             <p className="mt-8 text-center text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
-              Ministry of Consumer Affairs
+              {t('login.ministry')}
             </p>
           </div>
         </div>

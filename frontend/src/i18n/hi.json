@@ -1,42 +1,46 @@
 {
-  "common": {
-    "app_name": "Ration Saathi",
-    "loading": "Pratiksha karein...",
-    "error": "Kuch galat hua",
-    "submit": "Submit karein",
-    "back": "Piche",
-    "home": "Home"
-  },
+  "appName": "राशन साथी",
+  "tagline": "राशन पात्रता के लिए आपकी आवाज़",
   "login": {
-    "title": "Login Karein",
-    "phone_label": "Mobile Number",
-    "otp_label": "OTP Darj Karein",
-    "get_otp": "OTP Prapt Karein",
-    "verify_otp": "Verify Karein"
+    "title": "पोर्टल साइन इन",
+    "subtitle": "अपना पंजीकृत मोबाइल नंबर दर्ज करें",
+    "phoneNumber": "मोबाइल नंबर",
+    "getOtp": "सत्यापन कोड प्राप्त करें",
+    "otp": "6-अंकीय ओटीपी दर्ज करें",
+    "verify": "डैशबोर्ड में प्रवेश करें",
+    "edit": "संपादन",
+    "resendOtp": "ओटीपी पुनः भेजें",
+    "didntReceive": "कोड नहीं मिला?",
+    "secureAccess": "सुरक्षित पहुंच",
+    "secureAccessDesc": "बहु-कारक प्रमाणीकरण",
+    "onorcEnabled": "ONORC सक्षम",
+    "onorcEnabledDesc": "राष्ट्रव्यापी पोर्टेबिलिटी",
+    "digitalIndia": "डिजिटल इंडिया पहल",
+    "empowering": "सशक्तिकरण",
+    "citizens": "नागरिक",
+    "through": "के माध्यम से",
+    "smartGovernance": "स्मार्ट गवर्नेंस।",
+    "portalAccessDesc": "निर्बाध पात्रता प्रबंधन और शिकायत निवारण के लिए एकीकृत सार्वजनिक वितरण प्रणाली पोर्टल का उपयोग करें।",
+    "joinedBy": "आज",
+    "officialsToday": "अधिकारी शामिल हुए",
+    "ministry": "उपभोक्ता मामले मंत्रालय"
   },
-  "dashboard": {
-    "check_entitlement": "Entitlement Check",
-    "lodge_complaint": "Shikayat Darj Karein",
-    "track_case": "Case Track Karein",
-    "village_report": "Gaon ki Report"
+  "home": {
+    "welcome": "स्वागत है",
+    "operationalDashboard": "परिचालन डैशबोर्ड",
+    "systemStatusOptimal": "सिस्टम की स्थिति अनुकूल है। आपके पास समीक्षा के लिए",
+    "pendingCases": "लंबित मामले",
+    "toReview": "हैं।",
+    "currentPeriod": "वर्तमान अवधि",
+    "quickReport": "त्वरित रिपोर्ट"
   },
-  "entitlement": {
-    "title": "Ration Jaanch",
-    "input_label": "Ration Card Number",
-    "not_found": "Card nahi mila",
-    "allocated": "Is mahine ka Ration",
-    "wheat": "Gehu",
-    "rice": "Chawal",
-    "sugar": "Cheeni"
-  },
-  "complaint": {
-    "title": "Shikayat Darj Karein",
-    "issue_type": "Samasya ka prakar",
-    "short_supply": "Kam ration mila",
-    "denial": "Ration dene se mana",
-    "quality": "Kharaab gunvatta",
-    "weighing": "Tol mein gadbadi",
-    "success": "Aapki shikayat darj ho gayi hai",
-    "case_id": "Case ID: {{id}}"
+  "languageToggle": "भाषा",
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "back": "पीछे",
+    "next": "अगला",
+    "submit": "सबमिट करें",
+    "logout": "लॉगआउट"
   }
 }

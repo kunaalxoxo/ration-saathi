@@ -3,6 +3,8 @@ import { initReactI18next } from 'react-i18next';
 import en from '../i18n/en.json';
 import hi from '../i18n/hi.json';
 
+const savedLanguage = localStorage.getItem('language') || 'hi';
+
 i18n
   .use(initReactI18next)
   .init({
@@ -10,11 +12,15 @@ i18n
       en: { translation: en },
       hi: { translation: hi }
     },
-    lng: 'hi', // default to Hindi as per project goals
+    lng: savedLanguage,
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false
     }
   });
+
+i18n.on('languageChanged', (lng) => {
+  localStorage.setItem('language', lng);
+});
 
 export { i18n };

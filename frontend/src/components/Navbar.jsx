@@ -31,7 +31,7 @@ const Navbar = () => {
           className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all font-black text-[10px] uppercase tracking-widest text-slate-500"
         >
           <Globe size={16} className="text-brand-600" />
-          <span>{i18n.language === 'hi' ? 'हिंदी' : 'English'}</span>
+          <span>{i18n.language === 'hi' ? 'English' : 'हिंदी'}</span>
         </button>
         
         <div className="relative group">
@@ -52,7 +52,7 @@ const Navbar = () => {
           className="flex items-center gap-2.5 px-5 py-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest"
         >
           <LogOut size={18} />
-          <span>Logout</span>
+          <span>{t('common.logout')}</span>
         </button>
       </div>
     </header>

@@ -43,25 +43,25 @@ const Home = () => {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 bg-brand-500 rounded-full animate-ping"></span>
-            <span className="text-[10px] font-black text-brand-600 uppercase tracking-[0.2em]">Operational Dashboard</span>
+            <span className="text-[10px] font-black text-brand-600 uppercase tracking-[0.2em]">{t('home.operationalDashboard')}</span>
           </div>
           <h2 className="text-4xl font-black text-slate-900 tracking-tight">
-            Welcome, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Officer'}</span>
+            {t('home.welcome')}, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Officer'}</span>
           </h2>
-          <p className="text-slate-400 font-medium mt-1">System status is optimal. You have <span className="text-slate-900 font-bold">{stats.pendingCases} pending cases</span> to review.</p>
+          <p className="text-slate-400 font-medium mt-1">{t('home.systemStatusOptimal')} <span className="text-slate-900 font-bold">{stats.pendingCases} {t('home.pendingCases')}</span> {t('home.toReview')}</p>
         </div>
         
         <div className="flex items-center gap-3">
           <div className="px-5 py-3 glass-card rounded-2xl flex items-center gap-3 border-slate-100">
             <Calendar size={18} className="text-brand-600" />
             <div className="text-left">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Current Period</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{t('home.currentPeriod')}</p>
               <p className="text-sm font-bold text-slate-900 mt-1">March 2026</p>
             </div>
           </div>
           <button className="btn btn-primary shadow-brand-200 gap-2">
             <Zap size={18} />
-            <span>Quick Report</span>
+            <span>{t('home.quickReport')}</span>
           </button>
         </div>
       </div>

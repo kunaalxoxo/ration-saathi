@@ -34,6 +34,19 @@
     "currentPeriod": "वर्तमान अवधि",
     "quickReport": "त्वरित रिपोर्ट"
   },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "entitlement": "पात्रता",
+    "lodgeGrievance": "शिकायत दर्ज करें",
+    "trackCases": "केस ट्रैक करें",
+    "villageReport": "गांव की रिपोर्ट",
+    "adminControl": "एडमिन कंट्रोल",
+    "portalSettings": "पोर्टल सेटिंग्स",
+    "documentation": "दस्तावेज़",
+    "systems": "प्रणालियां",
+    "governance": "शासन",
+    "unifiedPortal": "पीडीएस एकीकृत पोर्टल"
+  },
   "languageToggle": "भाषा",
   "common": {
     "loading": "लोड हो रहा है...",

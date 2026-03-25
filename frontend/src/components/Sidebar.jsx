@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
   ClipboardCheck, 
@@ -16,18 +17,19 @@ import {
 import { useAuth } from '../lib/authContext';
 
 const Sidebar = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   
   const navItems = [
-    { name: 'Dashboard', path: '/home', icon: LayoutDashboard },
-    { name: 'Entitlement', path: '/entitlement-check', icon: ClipboardCheck },
-    { name: 'Lodge Grievance', path: '/lodge-complaint', icon: MessageSquarePlus },
-    { name: 'Track Cases', path: '/case-tracker', icon: Search },
-    { name: 'Village Report', path: '/my-village-report', icon: BarChart3 },
+    { name: t('nav.dashboard'), path: '/home', icon: LayoutDashboard },
+    { name: t('nav.entitlement'), path: '/entitlement-check', icon: ClipboardCheck },
+    { name: t('nav.lodgeGrievance'), path: '/lodge-complaint', icon: MessageSquarePlus },
+    { name: t('nav.trackCases'), path: '/case-tracker', icon: Search },
+    { name: t('nav.villageReport'), path: '/my-village-report', icon: BarChart3 },
   ];
 
   if (user && (user.role === 'district_admin' || user.role === 'state_admin' || user.role === 'super_admin')) {
-    navItems.push({ name: 'Admin Control', path: '/admin', icon: ShieldCheck });
+    navItems.push({ name: t('nav.adminControl'), path: '/admin', icon: ShieldCheck });
   }
 
   return (
@@ -38,14 +40,14 @@ const Sidebar = () => {
             <ShieldCheck size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="font-black text-slate-900 leading-none tracking-tight text-lg">Ration Saathi</h1>
-            <p className="text-[9px] text-brand-600 font-black uppercase tracking-[0.2em] mt-1.5">PDS Unified Portal</p>
+            <h1 className="font-black text-slate-900 leading-none tracking-tight text-lg">{t('appName')}</h1>
+            <p className="text-[9px] text-brand-600 font-black uppercase tracking-[0.2em] mt-1.5">{t('nav.unifiedPortal')}</p>
           </div>
         </div>
       </div>
       
       <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
-        <p className="px-5 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4 mt-2">Systems</p>
+        <p className="px-5 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4 mt-2">{t('nav.systems')}</p>
         {navItems.map((item) => (
           <NavLink
             key={item.path}
@@ -66,14 +68,14 @@ const Sidebar = () => {
           </NavLink>
         ))}
 
-        <p className="px-5 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4 mt-10">Governance</p>
+        <p className="px-5 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4 mt-10">{t('nav.governance')}</p>
         <button className="w-full flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-[13px] font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all group">
           <Settings size={20} className="text-slate-400 group-hover:rotate-45 transition-transform duration-500" />
-          <span className="tracking-wide">Portal Settings</span>
+          <span className="tracking-wide">{t('nav.portalSettings')}</span>
         </button>
         <button className="w-full flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-[13px] font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all group">
           <HelpCircle size={20} className="text-slate-400" />
-          <span className="tracking-wide">Documentation</span>
+          <span className="tracking-wide">{t('nav.documentation')}</span>
         </button>
       </nav>
       

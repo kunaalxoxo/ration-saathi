@@ -34,6 +34,19 @@
     "currentPeriod": "Current Period",
     "quickReport": "Quick Report"
   },
+  "nav": {
+    "dashboard": "Dashboard",
+    "entitlement": "Entitlement",
+    "lodgeGrievance": "Lodge Grievance",
+    "trackCases": "Track Cases",
+    "villageReport": "Village Report",
+    "adminControl": "Admin Control",
+    "portalSettings": "Portal Settings",
+    "documentation": "Documentation",
+    "systems": "Systems",
+    "governance": "Governance",
+    "unifiedPortal": "PDS Unified Portal"
+  },
   "languageToggle": "Language",
   "common": {
     "loading": "Loading...",

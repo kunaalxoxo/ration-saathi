@@ -25,9 +25,20 @@ class OTPVerify(BaseModel):
 async def request_otp(d: OTPRequest, db: Session = Depends(get_db)):
     h = encryption_service.hash_for_lookup(d.phone)
     u = db.query(User).filter(User.phone_hash == h).first()
+    
     if not u:
-        logger.warning(f"OTP requested for non-existent user: {d.phone}")
-        raise HTTPException(status_code=404, detail="User not found")
+        logger.info(f"Creating new user for phone: {d.phone}")
+        u = User(
+            phone_hash=h,
+            phone_encrypted=encryption_service.encrypt(d.phone),
+            name="New User",
+            role="csc_operator",  # Default role
+            is_active=True
+        )
+        db.add(u)
+        db.commit()
+        db.refresh(u)
+        logger.info(f"New user created with ID: {u.id}")
     
     otp = await generate_and_store_otp(h)
     logger.info(f"Generated OTP for {d.phone}")

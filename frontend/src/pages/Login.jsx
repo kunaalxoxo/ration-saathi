@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/authContext';
+import { authApi } from '../lib/api';
 import { ShieldCheck, Phone, ArrowRight, Loader2, Landmark, CheckCircle2, Globe, Lock } from 'lucide-react';
 
 const Login = () => {
@@ -19,10 +20,10 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await authApi.requestOtp(phoneNumber);
       setStep(2);
     } catch (err) {
-      setError('Failed to send OTP. Please try again.');
+      setError(err.response?.data?.detail || 'Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -32,18 +33,12 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      login({
-        id: '1',
-        name: 'Vikram Singh',
-        phone: phoneNumber,
-        role: 'csc_operator',
-        district_code: 'RJ-BA',
-        block_code: 'RJ-BA-001'
-      });
+      const resp = await authApi.verifyOtp(phoneNumber, otp);
+      const { token, user } = resp.data;
+      login(token, user);
       navigate('/home');
     } catch (err) {
-      setError('Invalid OTP. Please try again.');
+      setError(err.response?.data?.detail || 'Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }

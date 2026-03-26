@@ -1,4 +1,3 @@
-from twilio.rest import Client as TwilioClient
 import httpx
 import logging
 from app.core.config import settings
@@ -10,12 +9,6 @@ class SMSService:
     def __init__(self):
         self.fast2sms_key = settings.FAST2SMS_API_KEY
         self.fast2sms_url = "https://www.fast2sms.com/dev/bulkV2"
-        self.twilio_client = None
-        if settings.TWILIO_ACCOUNT_SID and settings.TWILIO_AUTH_TOKEN:
-            self.twilio_client = TwilioClient(
-                settings.TWILIO_ACCOUNT_SID, 
-                settings.TWILIO_AUTH_TOKEN
-            )
         self.redis = Redis(
             url=settings.UPSTASH_REDIS_REST_URL,
             token=settings.UPSTASH_REDIS_REST_TOKEN
@@ -23,7 +16,7 @@ class SMSService:
 
     async def send_otp_sms(self, phone: str, otp: str) -> bool:
         msg = f"Ration Saathi: Aapka OTP {otp} hai. Yeh 5 minute ke liye vaidh hai."
-        logger.info(f"Sending OTP to {phone}")
+        logger.info(f"Preparing OTP SMS for {phone}")
         return await self._execute_send(phone, msg)
 
     async def send_case_created_sms(self, phone: str, num: str, lang: str = 'hi') -> bool:
@@ -31,7 +24,7 @@ class SMSService:
             return False
         msg = (
             f"Ration Saathi: Aapki fariyaad darj hui. Case ID: {num}. "
-            f"Status jaanne ke liye {settings.TWILIO_PHONE_NUMBER} par call karein."
+            f"Status jaanne ke liye humein call karein."
         )
         return await self._execute_send(phone, msg)
 
@@ -41,43 +34,41 @@ class SMSService:
         count = self.redis.incr(key)
         if count == 1:
             self.redis.expire(key, 86400)
-        return count <= 3
+        return count <= 10  # Increased limit for testing
 
     async def _execute_send(self, phone: str, msg: str) -> bool:
-        # Try Twilio first if configured
-        if self.twilio_client and settings.TWILIO_PHONE_NUMBER:
-            try:
-                logger.info(f"Attempting to send SMS via Twilio to {phone}")
-                self.twilio_client.messages.create(
-                    body=msg,
-                    from_=settings.TWILIO_PHONE_NUMBER,
-                    to=f"+91{phone}" if not phone.startswith('+') else phone
+        if not self.fast2sms_key:
+            logger.error("FAST2SMS_API_KEY not configured")
+            return False
+
+        # Fast2SMS requires numbers without +91
+        clean_phone = phone.replace("+91", "").strip()
+        
+        try:
+            logger.info(f"Sending SMS via Fast2SMS to {clean_phone}")
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    self.fast2sms_url,
+                    data={
+                        "route": "q",
+                        "message": msg,
+                        "language": "english",
+                        "numbers": clean_phone
+                    },
+                    headers={"authorization": self.fast2sms_key}
                 )
-                return True
-            except Exception as e:
-                logger.error(f"Twilio SMS failed: {str(e)}")
-
-        # Fallback to Fast2SMS
-        if self.fast2sms_key:
-            try:
-                logger.info(f"Attempting to send SMS via Fast2SMS to {phone}")
-                async with httpx.AsyncClient() as client:
-                    resp = await client.post(
-                        self.fast2sms_url,
-                        data={
-                            "route": "q",
-                            "message": msg,
-                            "language": "english",
-                            "numbers": phone
-                        },
-                        headers={"authorization": self.fast2sms_key}
-                    )
-                    return resp.status_code == 200
-            except Exception as e:
-                logger.error(f"Fast2SMS failed: {str(e)}")
-
-        logger.error("No SMS provider configured or all failed")
-        return False
+                
+                resp_json = resp.json()
+                logger.info(f"Fast2SMS Response for {clean_phone}: {resp_json}")
+                
+                if resp.status_code == 200 and resp_json.get("return") is True:
+                    return True
+                else:
+                    logger.error(f"Fast2SMS delivery failed: {resp_json.get('message')}")
+                    return False
+        except Exception as e:
+            logger.error(f"Fast2SMS request failed: {str(e)}")
+            return False
 
 
 sms_service = SMSService()

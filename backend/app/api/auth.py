@@ -46,8 +46,7 @@ async def request_otp(d: OTPRequest, db: Session = Depends(get_db)):
     success = await sms_service.send_otp_sms(d.phone, otp)
     if not success:
         logger.error(f"Failed to send SMS to {d.phone}")
-        # Still return success in demo if needed, but for now let's be strict
-        # return {"success": True, "demo_otp": otp} 
+        raise HTTPException(status_code=500, detail="Failed to send OTP SMS")
     
     return {"success": True}
 
